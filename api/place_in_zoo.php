@@ -9,15 +9,18 @@ if (!isset($_SESSION['token'])) {
 }
 
 $room = $_POST['room'] ?? null;
-$animal = $_POST['animal'] ?? null;
+$cards = $_POST['cards'] ?? [];
 
-if (empty($card) || empty($player)) {
+if (empty($room) || empty($cards) || !is_array($cards)) {
 	echo json_encode(['status' => 'error', 'message' => 'Not enough info']);
 	exit;
 }
 
-$stmt = $pdo->prepare('SELECT s338859.place_in_zoo(:t, :room, :animal)');
-$stmt->execute(['t' => $_SESSION['token'], 'room' => $room, 'animal' => $animal]);
+$cards_sql = '{' . implode(',', array_map('intval', $cards)) . '}'; // Преобразуем массив в формат PostgreSQL
+
+
+$stmt = $pdo->prepare('SELECT s338859.place_in_zoo(:t, :room, :cards::integer[])');
+$stmt->execute(['t' => $_SESSION['token'], 'room' => $room, 'cards' => $cards_sql]);
 $result = $stmt->fetchColumn();
 
 $response = json_decode($result, true);
@@ -25,6 +28,7 @@ $response = json_decode($result, true);
 if ($response && isset($response['status']) && $response['status'] === 'success') {
 	echo json_encode([
 		'status' => 'success',
+		'message' => $response['message'],
 		'info' => $response
 	]);
 } else {

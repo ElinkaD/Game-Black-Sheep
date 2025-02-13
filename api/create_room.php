@@ -17,7 +17,7 @@ $result = $stmt->fetchColumn();
 
 $response = json_decode($result, true);
 
-if ($response && isset($response['success']) && $response['success'] === true) {
+if ($response && isset($response['status']) && $response['status'] === 'success') {
 	$_SESSION['id_room'] = $response['id_new_room'];
 
 	echo json_encode([

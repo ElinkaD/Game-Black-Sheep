@@ -7,7 +7,7 @@ $login = $_POST['login'] ?? null;
 $password = $_POST['password'] ?? null;
 
 if (empty($login) || empty($password)) {
-	echo json_encode(['status' => 'error', 'message' => 'No login or password']);
+	echo json_encode(['status' => 'error', 'message' => 'Не введен логин или пароль']);
 	exit;
 }
 
@@ -17,7 +17,7 @@ $result = $stmt->fetchColumn();
 
 $response = json_decode($result, true);
 
-if ($response && isset($response['success']) && $response['success'] === true) {
+if ($response && isset($response['status']) && $response['status'] === 'success') {
 	$_SESSION['token'] = $response['token'];
 	$_SESSION['rooms'] = $response['rooms'];
 
@@ -28,7 +28,7 @@ if ($response && isset($response['success']) && $response['success'] === true) {
 } else {
 	echo json_encode([
 		'status' => 'error',
-		'message' => $response['result_message'] ?? 'Something is wrong'
+		'message' => $response['result_message'] ?? 'Error'
 	]);
 }
 ?>

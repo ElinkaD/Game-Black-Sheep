@@ -9,16 +9,15 @@ if (!isset($_SESSION['token'])) {
 }
 
 $room = $_POST['room'] ?? null;
-$player = $_POST['player'] ?? null;
-$type = $_POST['type'] ?? null;
+$card = $_POST['card'] ?? null;
 
-if (empty($card) || empty($player)) {
+if (empty($card) || empty($room)) {
 	echo json_encode(['status' => 'error', 'message' => 'Not enough info']);
 	exit;
 }
 
-$stmt = $pdo->prepare('SELECT s338859.select_one_card(:t, :player, :type, :room)');
-$stmt->execute(['t' => $_SESSION['token'], 'room' => $room, 'type' => $type, 'player' => $player]);
+$stmt = $pdo->prepare('SELECT s338859.select_one_card(:t, :room, :card)');
+$stmt->execute(['t' => $_SESSION['token'], 'room' => $room, 'card' => $card]);
 $result = $stmt->fetchColumn();
 
 $response = json_decode($result, true);
@@ -26,6 +25,7 @@ $response = json_decode($result, true);
 if ($response && isset($response['status']) && $response['status'] === 'success') {
 	echo json_encode([
 		'status' => 'success',
+		'message' => $response['message'],
 		'info' => $response
 	]);
 } else {

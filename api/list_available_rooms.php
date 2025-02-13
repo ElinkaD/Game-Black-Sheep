@@ -8,15 +8,15 @@ if (!isset($_SESSION['token'])) {
 	exit;
 }
 
-$stmt = $pdo->prepare('SELECT s335141.remove_tokens(:t)');
+$stmt = $pdo->prepare('SELECT s338859.available_rooms(:t)');
 $stmt->execute(['t' => $_SESSION['token']]);
 $result = $stmt->fetchColumn();
 
 $response = json_decode($result, true);
 
 if ($response && isset($response['status']) && $response['status'] === 'success') {
-	session_destroy();
-	
+	$_SESSION['rooms'] = $response['rooms'];
+
 	echo json_encode([
 		'status' => 'success',
 		'info' => $response
@@ -24,7 +24,7 @@ if ($response && isset($response['status']) && $response['status'] === 'success'
 } else {
 	echo json_encode([
 		'status' => 'error',
-		'message' => $response['error'] ?? 'Error'
+		'message' => $response['result_message'] || 'Error'
 	]);
 }
 ?>

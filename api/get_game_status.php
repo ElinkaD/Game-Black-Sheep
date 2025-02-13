@@ -9,7 +9,6 @@ if (!isset($_SESSION['token'])) {
 }
 
 $room = $_POST['room'] ?? null;
-
 if (empty($room)) {
 	echo json_encode(['status' => 'error', 'message' => 'Write all the information']);
 	exit;
@@ -21,7 +20,7 @@ $result = $stmt->fetchColumn();
 
 $response = json_decode($result, true);
 
-if ($response && isset($response['success']) && $response['success'] === true) {
+if ($response && isset($response['status']) && $response['status'] === 'success') {
 	$_SESSION['game'] = $response;
 
 	echo json_encode([
