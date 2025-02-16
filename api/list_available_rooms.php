@@ -8,7 +8,7 @@ if (!isset($_SESSION['token'])) {
 	exit;
 }
 
-$stmt = $pdo->prepare('SELECT s338859.available_rooms(:t)');
+$stmt = $pdo->prepare('SELECT s338859.list_available_rooms(:t)');
 $stmt->execute(['t' => $_SESSION['token']]);
 $result = $stmt->fetchColumn();
 
@@ -19,12 +19,13 @@ if ($response && isset($response['status']) && $response['status'] === 'success'
 
 	echo json_encode([
 		'status' => 'success',
-		'info' => $response
+		'info' => $_SESSION['rooms'],
+		'message' => $response['result_message']
 	]);
 } else {
 	echo json_encode([
 		'status' => 'error',
-		'message' => $response['result_message'] || 'Error'
+		'message' => $response['result_message'] ?? 'Error'
 	]);
 }
 ?>

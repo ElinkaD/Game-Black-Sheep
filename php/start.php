@@ -13,7 +13,7 @@
 		<dialog data-dialog-name="auth-dialog">
 			<button class="close"></button>
 			<form id="loginForm" method="POST">
-				<h2>ВХОД</h2>
+				<h2>Вход</h2>
 				<div class="form-group">
 					<input name="login-auth" type="text" placeholder=" " required>
 					<label for="login-auth">
@@ -26,14 +26,14 @@
 						Введите пароль
 					</label>
 				</div>
-				<button type="submit">войти</button>
+				<button type="submit">Войти</button>
 			</form>
 		</dialog>
 
 		<dialog data-dialog-name="register-dialog">
 			<button class="close"></button>
 			<form id="registerForm" method="POST">
-				<h2>РЕГИСТРАЦИЯ</h2>
+				<h2>Регистрация</h2>
 				<div class='forms'>
 					<div class="form-group">
 						<input name="login" type="text" placeholder=" " required>
@@ -54,9 +54,9 @@
 						</label>
 					</div>
 				</div>
-				<button type="submit">зарегистрироваться</button>
+				<button type="submit">Зарегистрироваться</button>
 			</form>
 		</dialog>
 	</main>
-	<script type="module" src="../scripts/index.js"></script>
+	<script type="module" src="../js/start.js"></script>
 </html>
