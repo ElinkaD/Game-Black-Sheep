@@ -4,19 +4,46 @@ session_start();
 if (!isset($_SESSION['token'])) {
 	header("Location: ./start.php");
 }
+
 include '../api/db_connect.php';
 
-// $idRoom = $_GET['room'];
+$room_id = $_GET['room_id'] ?? null;
 
-
-// $stmt = $pdo->prepare('SELECT * FROM s335141.users_in_rooms where login_user =:login and id_room =:room');
-// $stmt->execute(['login' => $_SESSION['user']['login'], 'room' => $idRoom]);
-// $result = $stmt->fetch();
-
-if (!$result) {
-	header("Location: ./rooms.php");
+if (empty($room_id)) {
+    header("Location: ./rooms.php");
+    exit;
 }
+
+$stmt = $pdo->prepare('SELECT s338859.get_game_status(:t, :room)');
+$stmt->execute(['t' => $_SESSION['token'], 'room' => $room_id]);
+$result = $stmt->fetchColumn();
+$response = json_decode($result, true);
+
+if (!$response || $response['status'] !== 'success') {
+    header("Location: ./rooms.php");
+    exit;
+}
+
+$_SESSION['game'] = $response;
 ?>
+
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Игра Черная овечка №<?= htmlspecialchars($room_id)?></title>
+</head>
+<main>
+	<h1>Комната №<?= htmlspecialchars($room_id) ?></h1>
+    
+	<div id="game-status"></div>
+
+	<div id="game-data" 
+         data-game-status="<?= htmlspecialchars(json_encode($response)) ?>">
+        <!-- Здесь будет интерфейс игры -->
+    </div>
+</main>
+<script type="module" src="../js/game.js"></script>
+</html>
 
 <!-- <!DOCTYPE html>
 <html>

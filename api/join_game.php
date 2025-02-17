@@ -9,7 +9,8 @@ if (!isset($_SESSION['token'])) {
 }
 
 $data = json_decode(file_get_contents("php://input"), true);
-$room_id = isset($data['room_id']) ?? null;
+$room_id = isset($data['roomId']) ? $data['roomId'] : null;
+
 if (empty($room_id)) {
 	echo json_encode(['status' => 'error', 'message' => 'No room']);
 	exit;

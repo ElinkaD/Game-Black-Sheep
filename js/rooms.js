@@ -35,17 +35,24 @@ function updateRoomsList() {
 export { updateRoomsList };
 
 function joinRoom(roomId) {
+    console.log("Передаваемый roomId:", roomId);
     fetch('../api/join_game.php', {
         method: 'POST',
         headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ room_id: roomId }) 
+        body: JSON.stringify({ roomId }) 
     })
     .then(response => response.json())
     .then(data => {
+        console.log("Ответ от сервера:", data); 
         if (data.status === 'success') {
             window.location.href = `game.php?room_id=${roomId}`; 
-        } else {
-            alert(data.message);
+        } 
+        else if (data.message === 'Пользователь уже находится в комнате') {
+            window.location.href = `game.php?room_id=${roomId}`;
+        }
+         else {
+            console.log(data.message);
+            alert(data.message); 
         }
     })
     .catch(error => {
@@ -62,6 +69,7 @@ document.addEventListener("DOMContentLoaded", () => {
     document.querySelector('.rooms-list').addEventListener('click', (event) => {
         if (event.target.classList.contains('join-room')) {
             const roomId = event.target.getAttribute('data-id-room');
+
             if (event.target.classList.contains('continue')) {
                 window.location.href = `game.php?room_id=${roomId}`;
             } else {

@@ -8,14 +8,16 @@ if (!isset($_SESSION['token'])) {
 	exit;
 }
 
-$room = $_POST['room'] ?? null;
-if (empty($room)) {
+$data = json_decode(file_get_contents("php://input"), true);
+$room_id = isset($data['roomId']) ? $data['roomId'] : null;
+
+if (empty($room_id)) {
 	echo json_encode(['status' => 'error', 'message' => 'Write all the information']);
 	exit;
 }
 
-$stmt = $pdo->prepare('SELECT s338859.get_game_status(:t, :room)');
-$stmt->execute(['t' => $_SESSION['token'], 'room' => $room]);
+$stmt = $pdo->prepare('SELECT s338859.get_game_status(:t, :room_id)');
+$stmt->execute(['t' => $_SESSION['token'], 'room_id' => $room_id]);
 $result = $stmt->fetchColumn();
 
 $response = json_decode($result, true);
