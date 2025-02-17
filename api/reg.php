@@ -3,8 +3,8 @@ session_start();
 
 include 'db_connect.php';
 
-$login = $_POST['login'] ?? null;
-$password = $_POST['password'] ?? null;
+$login = trim($_POST['login'] ?? '');
+$password = trim($_POST['password'] ?? '');
 
 if (empty($login) || empty($password)) {
 	echo json_encode(['status' => 'error', 'message' => 'Не введен логин или пароль']);
@@ -20,10 +20,10 @@ $response = json_decode($result, true);
 if ($response && isset($response['status']) && $response['status'] === 'success') {
 	$_SESSION['token'] = $response['token'];
 	$_SESSION['login'] = $login;
-	$_SESSION['rooms'] = $response['rooms'];
 
 	echo json_encode([
 		'status' => 'success',
+		'message' => $response['result_message'],
 		'info' => $response
 	]);
 } else {

@@ -3,8 +3,9 @@ session_start();
 
 include 'db_connect.php';
 
-$login = $_POST['login'] ?? null;
-$password = $_POST['password'] ?? null;
+$login = trim($_POST['login'] ?? '');
+$password = trim($_POST['password'] ?? '');
+
 if (empty($login) || empty($password)) {
 	echo json_encode(['status' => 'error', 'message' => 'No login or password']);
 	exit;
@@ -19,7 +20,6 @@ $response = json_decode($result, true);
 if ($response && isset($response['status']) && $response['status'] === 'success') {
 	$_SESSION['token'] = $response['token'];
 	$_SESSION['login'] = $login;
-	$_SESSION['rooms'] = $response['rooms'];
 	$_SESSION['role'] = $response['role'];
 	
 	echo json_encode([

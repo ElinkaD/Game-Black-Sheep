@@ -1,4 +1,3 @@
-
 <!DOCTYPE html>
 <html>	
 	<main class="start">
@@ -10,53 +9,18 @@
 			<button data-show-dialog="rules-dialog">правила</button>
 		</div>
 
-		<dialog data-dialog-name="auth-dialog">
-			<button class="close"></button>
-			<form id="loginForm" method="POST">
-				<h2>Вход</h2>
-				<div class="form-group">
-					<input name="login-auth" type="text" placeholder=" " required>
-					<label for="login-auth">
-						Введите логин
-					</label>
-				</div>
-				<div class="form-group">
-					<input name="password-auth" type="password" placeholder=" " required>
-					<label for="password-auth">
-						Введите пароль
-					</label>
-				</div>
-				<button type="submit">Войти</button>
-			</form>
-		</dialog>
+		<?php
+		include '../components/dialog/component.php';
 
-		<dialog data-dialog-name="register-dialog">
-			<button class="close"></button>
-			<form id="registerForm" method="POST">
-				<h2>Регистрация</h2>
-				<div class='forms'>
-					<div class="form-group">
-						<input name="login" type="text" placeholder=" " required>
-						<label for="login">
-							Введите логин
-						</label>
-					</div>
-					<div class="form-group">
-						<input name="password" type="password"  placeholder=" " required>
-						<label for="password">
-							Введите пароль
-						</label>
-					</div>
-					<div class="form-group">
-						<input name="password-again" type="password" placeholder=" " required>
-						<label for="password-again">
-							Повторите пароль
-						</label>
-					</div>
-				</div>
-				<button type="submit">Зарегистрироваться</button>
-			</form>
-		</dialog>
+		$authForm = file_get_contents('../components/dialog/templates/auth/template.php');
+		render_dialog('auth-dialog', $authForm);
+
+		$regForm = file_get_contents('../components/dialog/templates/reg/template.php');
+		render_dialog('register-dialog', $regForm);
+
+		$rules = file_get_contents('../components/dialog/templates/rules/template.php');
+		render_dialog('rules-dialog', $rules);
+		?>
 	</main>
-	<script type="module" src="../js/start.js"></script>
+	<!-- <script type="module" src="../js/start.js"></script> -->
 </html>
