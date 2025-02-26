@@ -4,6 +4,7 @@ class GameModalCard {
     constructor() {
         this.modalCard = document.getElementById('card-modal');
         this.modalMessage = document.getElementById('modal-message');
+        this.podloshka = this.modalCard.querySelector('.podloshka');
 
         this.modalCard.addEventListener('click', (event) => {
             if (event.target === this.modalCard) {
@@ -15,10 +16,11 @@ class GameModalCard {
     showCardInModal(id, calculatedType, cardType = null, message = "") {
         this.modalMessage.textContent = message;
 
+        this.podloshka.innerHTML = ''; 
+        this.podloshka.appendChild(this.modalMessage);
+
         renderCard(id, calculatedType, cardType, (html) => {
-            this.modalCard.innerHTML = ''; 
-            this.modalCard.appendChild(this.modalMessage); 
-            this.modalCard.innerHTML += html; 
+            this.podloshka.innerHTML += html;
         });
 
         this.modalCard.style.display = 'flex'; 

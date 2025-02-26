@@ -182,7 +182,10 @@ document.addEventListener("DOMContentLoaded", () => {
             renderCard(id, calculatedType, cardType, (html) => {
                 cardContainer.innerHTML += html;
             });
-        } 
+        }
+        if(cardType == 'черная овечка'){
+            getGameStatus();
+        }
     }
 
     function drawCard(playerId) {
