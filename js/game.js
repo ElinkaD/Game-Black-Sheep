@@ -14,6 +14,7 @@ document.addEventListener("DOMContentLoaded", () => {
         })
         .then(response => response.json())
         .then(data => {
+            console.log("JSON-данные:", data);
             if (data.status === 'success') {
                 updateGameStatus(data.info); 
             } else {
@@ -26,36 +27,163 @@ document.addEventListener("DOMContentLoaded", () => {
         });
     }
 
-    // Функция для обновления статуса игры на странице
-    function updateGameStatus(gameInfo) {
-        const gameStatusDiv = document.getElementById('game-status');
-        
-        // Формируем строку с информацией о текущем игроке и времени
-        const currentPlayer = gameInfo.current_turn_player || 'Неизвестно';
-        const remainingTime = formatTime(gameInfo.time_left);
-        const availableZooSlots = gameInfo.available_zoo_slots || 'Неизвестно';
-        const gameWinner = gameInfo.game_winner || 'Игра не завершена';
-
-        let gameStatusHTML = `
-            <p>Текущий игрок: ${currentPlayer}</p>
-            <p>Оставшееся время: ${remainingTime}</p>
-            <p>Доступные слоты для зоопарка: ${availableZooSlots}</p>
-            <p>Победитель: ${gameWinner}</p>
-        `;
-    
-        gameStatusHTML += displayCards('Карты на водопое', gameInfo.waterhole_cards);
-        gameStatusHTML += displayZooCards(gameInfo.zoo_opponent_cards);
-        gameStatusHTML += displayCards('Карты текущего игрока', gameInfo.my_player_info?.hand_cards);
-    
-        // Дополнительная информация о картах
-        gameStatusHTML += displayCardInfo('сорока-воровка', gameInfo.has_magpie_card);
-        gameStatusHTML += displayCardInfo('крот', gameInfo.has_mole_card);
-        gameStatusHTML += displayCards('Карты игрока с картой "крот"', gameInfo.mole_player_cards);
-    
-        gameStatusDiv.innerHTML = gameStatusHTML;
+    function renderCard(id, calculatedType, cardType = null, callback) {
+        fetch('../components/card/component.php', {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/x-www-form-urlencoded',
+            },
+            body: new URLSearchParams({
+                id: id,
+                calculated_type: calculatedType,
+                card_type: cardType,
+            }),
+        })
+        .then(response => response.text())
+        .then(html => {
+            callback(html);
+        })
+        .catch(error => {
+            console.error('Ошибка при рендеринге карты:', error);
+            callback('<div class="card">Ошибка загрузки карты</div>');
+        });
     }
 
-    // Форматирование времени (например, оставшееся время в секундах)
+    function updateGameStatus(gameInfo) {
+        const opponentsZoo = document.getElementById('opponents-zoo');
+        const waterhole = document.getElementById('waterhole');
+        const magpieCard = document.getElementById('magpie-card');
+        const playerZoo = document.getElementById('player-zoo');
+        const gameStatus = document.getElementById('game-status');
+        const playerHand = document.getElementById('player-hand');
+
+        // Очистка предыдущих данных
+        opponentsZoo.innerHTML = '';
+        waterhole.innerHTML = '';
+        magpieCard.innerHTML = '';
+        playerZoo.innerHTML = '';
+        gameStatus.innerHTML = '';
+        playerHand.innerHTML = '';
+
+        let currentPlayerLogin = 'Неизвестно';
+        const currentPlayerId = gameInfo.current_turn_player;
+        if (gameInfo.my_player_info && gameInfo.my_player_info.player_id == currentPlayerId) {
+            currentPlayerLogin = gameInfo.my_player_info.user_login;
+        } else {
+            if (gameInfo.zoo_opponent_cards) {
+                for (const playerId in gameInfo.zoo_opponent_cards) {
+                    if (playerId == currentPlayerId) {
+                        currentPlayerLogin = gameInfo.zoo_opponent_cards[playerId].player_login;
+                        break;
+                    }
+                }
+            }
+        }
+
+        if (gameInfo.zoo_opponent_cards) {
+            for (const playerId in gameInfo.zoo_opponent_cards) {
+                const playerInfo = gameInfo.zoo_opponent_cards[playerId];
+                const playerDiv = document.createElement('div');
+                playerDiv.className = 'opponent';
+                playerDiv.dataset.playerId = playerId;
+                
+                const playerLogin = playerInfo.player_login;
+                const isCurrentPlayer = playerLogin === currentPlayerLogin; 
+        
+                playerDiv.innerHTML = `
+                    <div class="opponent-header">
+                        <p class="player-login">${playerLogin}</p>
+                        <p class="cards-count">К-во карт: ${playerInfo.cards_in_hand_count}</p>
+                    </div>
+                `;
+
+                const cardContainer = document.createElement('div');
+                cardContainer.className = 'card-container';
+        
+                playerInfo.zoo_cards.forEach(card => {
+                    renderCard(card.card_id, card.calculated_type, card.card_type, (html) => {
+                        cardContainer.innerHTML += html;
+                    });
+                });
+        
+                playerDiv.appendChild(cardContainer);
+                document.getElementById('opponents-zoo').appendChild(playerDiv);
+        
+                playerDiv.addEventListener('mouseenter', () => {
+                    if (!isCurrentPlayer) {
+                        playerDiv.style.backgroundColor = '#D1DCB2'; 
+                    }
+                })
+        
+                playerDiv.addEventListener('mouseleave', () => {
+                    playerDiv.style.backgroundColor = ''; 
+                });
+        
+                playerDiv.addEventListener('click', () => {
+                    drawCard(playerId);
+                });
+        
+                // Если это текущий игрок, выделяем его
+                if (isCurrentPlayer) {
+                    playerDiv.style.border = '4px solid #2BAEAA'; 
+                }
+            }
+        }
+        
+
+        if (gameInfo.waterhole_cards) {
+            const cardContainer = document.createElement('div');
+            cardContainer.className = 'card-container';
+
+            gameInfo.waterhole_cards.forEach(card => {
+                renderCard(card.card_id, card.calculated_type, card.card_type, (html) => {
+                    cardContainer.innerHTML += html;
+                });
+            });
+
+            waterhole.appendChild(cardContainer);
+        }
+
+        if (gameInfo.magpie_card.has_card) {
+            renderCard(gameInfo.magpie_card.card_id, null, 'сорока-воровка', (html) => {
+                magpieCard.innerHTML = html;
+            });
+        }
+
+        if (gameInfo.my_player_info.zoo_cards) {
+            const cardContainer = document.createElement('div');
+            cardContainer.className = 'card-container';
+
+            gameInfo.my_player_info.zoo_cards.forEach(card => {
+                renderCard(card.card_id, card.calculated_type, card.card_type, (html) => {
+                    cardContainer.innerHTML += html;
+                });
+            });
+
+            playerZoo.appendChild(cardContainer);
+        }
+
+        if (gameInfo.my_player_info.hand_cards) {
+            playerHand.innerHTML += `<h3>${gameInfo.my_player_info.user_login}</h3>`;
+            const cardContainer = document.createElement('div');
+            cardContainer.className = 'card-container';
+
+            gameInfo.my_player_info.hand_cards.forEach(card => {
+                renderCard(card.card_id, card.calculated_type, card.card_type, (html) => {
+                    cardContainer.innerHTML += html;
+                });
+            });
+
+            playerHand.appendChild(cardContainer);
+        }
+        
+        gameStatus.innerHTML = `
+            <p>Текущий ход: ${currentPlayerLogin}</p>
+            <p id='timer'>Оставшееся время: ${formatTime(gameInfo.time_left)}</p>
+            <p>К-во карт в зоопарк: ${gameInfo.available_zoo_slots || '0'}</p>
+        `;
+    }
+
     function formatTime(time) {
         if (time === undefined || time < 0) {
             return 'Неизвестно';
@@ -63,46 +191,100 @@ document.addEventListener("DOMContentLoaded", () => {
         return `${time} сек`;
     }
 
-    // Вывод карт (например, на водопое или в руке)
-    function displayCards(title, cards) {
-        if (!cards || cards.length === 0) {
-            return `<p>${title}: Нет карт</p>`;
-        }
-        let cardsHTML = `<p>${title}:</p><ul>`;
-        cards.forEach(card => {
-            cardsHTML += `<li>Карточка ID: ${card.card_id}, Тип: ${card.calculated_type}</li>`;
+    function showCardInModal(id, calculatedType, cardType = null, message = "") {
+        const modalCard = document.getElementById('card-modal');
+        const modalMessage = document.getElementById('modal-message');
+        
+        modalMessage.textContent = message;
+
+        renderCard(id, calculatedType, cardType, (html) => {
+            modalCard.innerHTML = ''; 
+            modalCard.appendChild(modalMessage);
+            modalCard.innerHTML += html;
         });
-        cardsHTML += '</ul>';
-        return cardsHTML;
+
+        document.getElementById('card-modal').style.display = 'flex';
+
+        if(cardType != 'черная овечка'){
+            const waterhole = document.getElementById('waterhole');
+            const cardContainer = waterhole.querySelector('.card-container');
+
+            renderCard(id, calculatedType, cardType, (html) => {
+                cardContainer.innerHTML += html;
+            });
+        } 
+
+        modalCard.addEventListener('click', (event) => {
+            if (event.target === modalCard) {
+                modalCard.style.display = 'none';
+            }
+        });
     }
 
-    // Вывод карт в зоопарке у соперников
-    function displayZooCards(zooCards) {
-        if (!zooCards || Object.keys(zooCards).length === 0) {
-            return '<p>У соперников нет карт в зоопарке.</p>';
-        }
-        let zooCardsHTML = '<p>Карты в зоопарке у соперников:</p><ul>';
-        for (const playerId in zooCards) {
-            const playerInfo = zooCards[playerId];
-            zooCardsHTML += `
-                <li>Игрок: ${playerInfo.player_login}</li>
-                <ul>
-                    ${playerInfo.zoo_cards.map(card => `
-                        <li>Карточка ID: ${card.card_id}, Тип: ${card.calculated_type}</li>
-                    `).join('')}
-                    <li>Количество карт в руке: ${playerInfo.cards_in_hand_count}</li>
-                </ul>
-            `;
-        }
-        zooCardsHTML += '</ul>';
-        return zooCardsHTML;
-    }
-
-    // Дополнительная информация о картах
-    function displayCardInfo(cardType, hasCard) {
-        if (hasCard === undefined) return '';
-        return `<p>Есть ли карта "${cardType}": ${hasCard ? 'Да' : 'Нет'}</p>`;
+    function drawCard(playerId) {
+        fetch('../api/draw_card.php', {
+            method: 'POST',
+            headers: {'Content-Type': 'application/json'},
+            body: JSON.stringify({ playerId })
+        })
+        .then(response => response.json())
+        .then(data => {
+            console.log('Ответ от сервера:', data);
+            if (data.status === 'success') {
+                showCardInModal(data.card_id, data.calculated_type, data.card_type, data.message);
+            } else {
+                alert(data.message || 'Ошибка'); 
+            }
+        })
+        .catch(error => {
+            console.error('Ошибка при вытягивании карты:', error);
+            alert('Ошибка при вытягивании карты');
+        });
     }
 
     getGameStatus();
+
+    // setInterval(getGameStatus, 5000);
 });
+
+
+    // const initSlider = (slider) => {
+    //     let isDown = false;
+    //     let startX;
+    //     let scrollLeft;
+    
+    //     slider.addEventListener('pointerdown', (e) => {
+    //         if (e.target.tagName === 'IMG') return; // Игнорируем события на изображениях
+    //         isDown = true;
+    //         slider.classList.add('active');
+    //         startX = e.pageX - slider.offsetLeft;
+    //         scrollLeft = slider.scrollLeft;
+    //     });
+
+    //     slider.addEventListener('pointerleave', () => {
+    //         isDown = false;
+    //         slider.classList.remove('active');
+    //     });
+
+    //     slider.addEventListener('pointerup', () => {
+    //         isDown = false;
+    //         slider.classList.remove('active');
+    //     });
+
+    //     slider.addEventListener('pointermove', (e) => {
+    //         if (!isDown) return;
+    //         e.preventDefault();
+    //         const x = e.pageX - slider.offsetLeft;
+    //         const walk = (x - startX) * 3; 
+    //         slider.scrollLeft = scrollLeft - walk;
+    //     });
+
+    //     slider.addEventListener('wheel', (e) => {
+    //         e.preventDefault();
+    //         slider.scrollLeft += e.deltaY;
+    //     });
+        
+    // };
+    
+    // const sliders = document.querySelectorAll('.card-container');
+    // sliders.forEach(slider => initSlider(slider));

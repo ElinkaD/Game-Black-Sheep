@@ -6,6 +6,10 @@ if (!isset($_SESSION['token'])) {
 }
 
 include '../api/db_connect.php';
+include '../components/dialog/component.php';
+
+$rules = file_get_contents('../components/dialog/templates/rules/template.php');
+render_dialog('rules-dialog', $rules);
 
 $room_id = $_GET['room_id'] ?? null;
 
@@ -31,18 +35,40 @@ $_SESSION['game'] = $response;
 <html>
 <head>
     <title>Игра Черная овечка №<?= htmlspecialchars($room_id)?></title>
+	<link rel="stylesheet" href="../css/game.css">
+	<link rel="stylesheet" href="../components/card/style.css">
 </head>
-<main>
-	<h1>Комната №<?= htmlspecialchars($room_id) ?></h1>
-    
-	<div id="game-status"></div>
+	<main class='game'>
+		<div class="left-panel">
+			<div class="room-info">
+				<h1>Комната №<?= htmlspecialchars($room_id) ?></h1>
+				<button id="quit-button" data-id-room="">Выйти</button>
+			</div>
+			
+			<div id="opponents-zoo">
+				<div class="card-container" id="opponent-cards"></div>
+			</div>
+		</div>
 
-	<div id="game-data" 
-         data-game-status="<?= htmlspecialchars(json_encode($response)) ?>">
-        <!-- Здесь будет интерфейс игры -->
-    </div>
-</main>
-<script type="module" src="../js/game.js"></script>
+		<div class="right-panel">
+			<div class="rules">
+				<button data-show-dialog="rules-dialog">Правила</button>
+			</div>
+			<!-- Игровой экран -->
+			<div id="magpie-card"></div>
+			<div id="game-status"></div>
+			<div id="waterhole"></div>
+			<div id="player-zoo"></div>
+			<div id="player-hand"></div>
+		</div>
+	</main>
+
+	<div id="card-modal">
+		<div class="message" id="modal-message"></div>
+	</div>
+
+
+	<script type="module" src="../js/game.js"></script>
 </html>
 
 <!-- <!DOCTYPE html>

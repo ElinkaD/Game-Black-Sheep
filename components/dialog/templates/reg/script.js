@@ -2,8 +2,8 @@ document.addEventListener("DOMContentLoaded", () => {
     document.getElementById("registerForm").addEventListener("submit", async (event) => {
         event.preventDefault();
 
-        const login = event.target["login-auth"].value;
-        const password = event.target["password-auth"].value;
+        const login = event.target["login"].value;
+        const password = event.target["password"].value;
         const passwordAgain = event.target["password-again"].value;
         
         if (password !== passwordAgain) {

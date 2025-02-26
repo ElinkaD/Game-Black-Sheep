@@ -8,7 +8,9 @@ if (!isset($_SESSION['token'])) {
 	exit;
 }
 
-$player = $_POST['player'] ?? null;
+$data = json_decode(file_get_contents("php://input"), true);
+$player = isset($data['playerId']) ? $data['playerId'] : null;
+
 if (empty($player)) {
 	echo json_encode(['status' => 'error', 'message' => 'Not enough info']);
 	exit;
@@ -24,6 +26,9 @@ try {
     if ($response && isset($response['status']) && $response['status'] === 'success') {
         echo json_encode([
             'status' => 'success',
+            'card_id' => $response['card_id'],
+            'card_type' => $response['card_type'],
+            'calculated_type' => $response['calculated_type'],
             'message' => $response['message'],
             'info' => $response 
         ]);
