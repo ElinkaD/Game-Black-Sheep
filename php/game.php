@@ -7,9 +7,13 @@ if (!isset($_SESSION['token'])) {
 
 include '../api/db_connect.php';
 include '../components/dialog/component.php';
+include '../components/game_modal_card/component.php';
 
 $rules = file_get_contents('../components/dialog/templates/rules/template.php');
 render_dialog('rules-dialog', $rules);
+
+render_modal__card();
+
 
 $room_id = $_GET['room_id'] ?? null;
 
@@ -37,6 +41,8 @@ $_SESSION['game'] = $response;
     <title>Игра Черная овечка №<?= htmlspecialchars($room_id)?></title>
 	<link rel="stylesheet" href="../css/game.css">
 	<link rel="stylesheet" href="../components/card/style.css">
+	<link rel="stylesheet" href="../components/game_modal_card/style.css">
+</head>
 </head>
 	<main class='game'>
 		<div class="left-panel">
@@ -62,62 +68,5 @@ $_SESSION['game'] = $response;
 			<div id="player-hand"></div>
 		</div>
 	</main>
-
-	<div id="card-modal">
-		<div class="message" id="modal-message"></div>
-	</div>
-
-
 	<script type="module" src="../js/game.js"></script>
 </html>
-
-<!-- <!DOCTYPE html>
-<html>
-	<main class='game'>
-		<section class='aside'>
-			<div>
-				<div class="info">
-					<div class='head'>
-						<h4 id='game_status'></h4>
-						<div>
-							<button data-show-dialog="rules-dialog">правила</button>
-							<button id="quit-button" data-id-room="">выйти из игры</button>
-							<button onclick="window.location.href = './profile.php';">в профиль</button>
-						</div>
-					</div>
-					<span id='role'></span>
-					<div class='timer hidden'>
-						<span>Время до конца хода:</span>
-						<div id='timer'></div>
-					</div>
-					<div class='moves hidden'>
-						<span>До победы саботёров в игре осталось ходов:</span>
-						<div id='moves'></div>
-					</div>
-				</div>
-
-				<div class='players'>
-					<h3>Игроки</h3>
-					<ul class="players-list"></ul>
-				</div>
-				<div class="game-play">
-					<ul class="cards-hand waiting"></ul>
-					<div>
-						<button title='вы можете перевернуть карты' id="switch-cards" class="waiting">
-							<img src="../img/switch.png" alt="">
-						</button>
-						<div title='вы сбросить карту в колоду сброса' class="drop-card waiting">
-							<img src="../img/drop.svg" alt="">
-						</div>
-					</div>
-				</div>
-			</div>
-		</section>
-
-	</main>
-
-	<script type="module" src="../scripts/index.js"></script>
-	<script type="module" src="../scripts/quit.js"></script>
-	<script type="module" src="../scripts/game/game.js"></script>
-	<script type="module" src="../scripts/game/cards.js"></script>
-</html> -->

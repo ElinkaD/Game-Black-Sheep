@@ -1,3 +1,6 @@
+import gameModalCard from '../components/game_modal_card/script.js'; 
+import { renderCard } from '../components/card/script.js';
+
 document.addEventListener("DOMContentLoaded", () => {
     const roomId = new URLSearchParams(window.location.search).get('room_id');
     if (!roomId) {
@@ -24,28 +27,6 @@ document.addEventListener("DOMContentLoaded", () => {
         .catch(error => {
             console.error('Ошибка при получении статуса игры:', error);
             alert('Ошибка при получении статуса игры');
-        });
-    }
-
-    function renderCard(id, calculatedType, cardType = null, callback) {
-        fetch('../components/card/component.php', {
-            method: 'POST',
-            headers: {
-                'Content-Type': 'application/x-www-form-urlencoded',
-            },
-            body: new URLSearchParams({
-                id: id,
-                calculated_type: calculatedType,
-                card_type: cardType,
-            }),
-        })
-        .then(response => response.text())
-        .then(html => {
-            callback(html);
-        })
-        .catch(error => {
-            console.error('Ошибка при рендеринге карты:', error);
-            callback('<div class="card">Ошибка загрузки карты</div>');
         });
     }
 
@@ -125,7 +106,7 @@ document.addEventListener("DOMContentLoaded", () => {
         
                 // Если это текущий игрок, выделяем его
                 if (isCurrentPlayer) {
-                    playerDiv.style.border = '4px solid #2BAEAA'; 
+                    playerDiv.classList.add('current-player');
                 }
             }
         }
@@ -192,18 +173,7 @@ document.addEventListener("DOMContentLoaded", () => {
     }
 
     function showCardInModal(id, calculatedType, cardType = null, message = "") {
-        const modalCard = document.getElementById('card-modal');
-        const modalMessage = document.getElementById('modal-message');
-        
-        modalMessage.textContent = message;
-
-        renderCard(id, calculatedType, cardType, (html) => {
-            modalCard.innerHTML = ''; 
-            modalCard.appendChild(modalMessage);
-            modalCard.innerHTML += html;
-        });
-
-        document.getElementById('card-modal').style.display = 'flex';
+        gameModalCard.showCardInModal(id, calculatedType, cardType, message);
 
         if(cardType != 'черная овечка'){
             const waterhole = document.getElementById('waterhole');
@@ -213,12 +183,6 @@ document.addEventListener("DOMContentLoaded", () => {
                 cardContainer.innerHTML += html;
             });
         } 
-
-        modalCard.addEventListener('click', (event) => {
-            if (event.target === modalCard) {
-                modalCard.style.display = 'none';
-            }
-        });
     }
 
     function drawCard(playerId) {
