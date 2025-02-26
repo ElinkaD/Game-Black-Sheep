@@ -1,14 +1,8 @@
-* {
-    margin: 0;
-    padding: 0;
-    box-sizing: border-box;
-}
-
 .game {
     display: flex;
     height: 100vh;
-    padding: 2%;
     background-color: #F9FAF7;
+    position: relative;
 }
 
 .card-container {
@@ -105,4 +99,5 @@
     border: 1px solid #ccc;
     border-radius: 5px;
 }
+
 
