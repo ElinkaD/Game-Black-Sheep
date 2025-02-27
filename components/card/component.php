@@ -33,8 +33,8 @@ function renderCard($id, $calculatedType = null, $cardType = null) {
     // onclick='handleCardClick({$id}
 
     return "
-    <div class='card' data-id='{$id}' data-type='{$type}')'>
-        <img src='{$imagePath}' alt='Карта {$type}' draggable='false'>
+    <div class='card' data-id='{$id}' data-type='{$type}' onclick='handleCardClick({$id})'>
+        <img src='{$imagePath}' alt='Карта {$type}'>
     </div>";
 }
 

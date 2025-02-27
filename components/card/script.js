@@ -21,3 +21,4 @@ function renderCard(id, calculatedType, cardType = null, callback) {
 }
 
 export { renderCard };
+

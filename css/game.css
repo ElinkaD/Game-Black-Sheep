@@ -94,10 +94,37 @@
     gap: 20px;
 }
 
-#game-status, #player-zoo, #waterhole, #player-hand {
+.rules{
+    margin-left: auto;
+}
+
+ #player-zoo, #player-hand, #waterhole {
     padding: 15px;
     border: 1px solid #ccc;
     border-radius: 5px;
 }
 
+.game-panel {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    gap: 5%;
+}
 
+
+.waterhole-сard {
+    width: 250px;
+    height: 150px;
+    background: url('../img/water.png') no-repeat center center;
+    background-size: cover;
+    border-radius: 15px;
+    box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+}
+
+#game-status {
+    width: 200px;
+    font-size: 16px;
+    font-weight: bold;
+    text-align: left;
+    color: #4B4F4E;
+}
