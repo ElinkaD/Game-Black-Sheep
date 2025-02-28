@@ -40,7 +40,6 @@ if (!$response || $response['status'] !== 'success') {
 
 $_SESSION['game'] = $response;
 ?>
-
 <!DOCTYPE html>
 <html>
 <head>
@@ -68,13 +67,28 @@ $_SESSION['game'] = $response;
 			</div>
 			<!-- Игровой экран -->
 			<div class="game-panel">
-				<div id="magpie-card"></div>
+				<div id="magpie-card">
+					<div class='card' data-id='9999' data-type='сорока-воровка'>
+							<img src='../img/magpiethief.png' alt='Карта Сорока-воровка'>
+						</div>
+					</div>
 				<div class="waterhole-сard"></div>
-				<div id="game-status"></div>
+				<div id="game-status">
+						Текущий ход: <span id='hod'></span> </br>
+						Оставшееся время: <span id='timer'></span> сек </br>
+						К-во карт в зоопарк: <span id='ave-count'></span>
+				</div>
 			</div>
-			<div id="waterhole"></div>
-			<div id="player-zoo"></div>
-			<div id="player-hand"></div>
+			<div id="waterhole">
+				<div id="waterhole-cards" class="card-container"></div>
+			</div>
+			<div id="player-zoo">
+				<div id="player-zoo-cards" class="card-container"></div>
+			</div>
+			<div id="player-hand">
+				<h3 id="player-name"></h3>
+				<div id="player-hand-cards" class="card-container"></div>
+			</div>
 			<button id="place-cards-btn">Карты в зоопарк</button>
 		</div>
 	</main>

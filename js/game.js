@@ -5,7 +5,7 @@ import { openMoleCardDialog } from '../components/dialog/templates/mole/script.j
 import { openEagleCardDialog } from '../components/dialog/templates/eagle/script.js';
 import { setupQuitButton } from './quit_game.js';
 
-let currentCards = new Set();
+const cardContainers = new Map();
 let selectedCards = [];
 
 function addClickListenersToCards() {
@@ -31,6 +31,34 @@ function handleCardClick(cardId, cardElement) {
     }
 }
 
+function updateCards(containerId, cardsData) {
+    const container = document.getElementById(containerId);
+    if (!container) return;
+
+    if (!Array.isArray(cardsData) || cardsData.length === 0) {
+        container.innerHTML = ''; 
+        return;
+    }
+
+    const newCards = new Set(cardsData.map(card => card.card_id));
+
+    const currentCards = container.querySelectorAll('.card');
+    currentCards.forEach(cardElement => {
+        const cardId = cardElement.dataset.cardId;
+        if (!newCards.has(cardId)) {
+            cardElement.remove();
+        }
+    });
+
+    cardsData.forEach(card => {
+        const existingCardElement = container.querySelector(`[data-card-id="${card.card_id}"]`);
+        if (!existingCardElement) {
+            renderCard(card.card_id, card.calculated_type, card.card_type, (html) => {
+                container.insertAdjacentHTML('beforeend', html);
+            });
+        }
+    });
+}
 
 
 // Функция для получения статуса игры
@@ -57,34 +85,24 @@ export function getGameStatus() {
 
 function updateGameStatus(gameInfo) {
     const opponentsZoo = document.getElementById('opponents-zoo');
-    const waterhole = document.getElementById('waterhole');
+    const playerName = document.getElementById('player-name');
     const magpieCard = document.getElementById('magpie-card');
-    const playerZoo = document.getElementById('player-zoo');
-    const gameStatus = document.getElementById('game-status');
-    const playerHand = document.getElementById('player-hand');
 
     // Очистка предыдущих данных
     opponentsZoo.innerHTML = '';
-    waterhole.innerHTML = '';
-    magpieCard.innerHTML = '';
-    playerZoo.innerHTML = '';
-    gameStatus.innerHTML = '';
-    playerHand.innerHTML = '';
 
-    let currentPlayerLogin = 'Неизвестно';
-    const currentPlayerId = gameInfo.current_turn_player;
-    if (gameInfo.my_player_info && gameInfo.my_player_info.player_id == currentPlayerId) {
-        currentPlayerLogin = gameInfo.my_player_info.user_login;
+    document.getElementById('hod').innerHTML = gameInfo.current_player_login;
+    document.getElementById('timer').innerHTML = gameInfo.time_left;
+    document.getElementById('ave-count').innerHTML = gameInfo.available_zoo_slots || '0';
+
+
+    if (gameInfo.magpie_card.has_card) {
+        magpieCard.style.opacity = '1'; 
     } else {
-        if (gameInfo.zoo_opponent_cards) {
-            for (const playerId in gameInfo.zoo_opponent_cards) {
-                if (playerId == currentPlayerId) {
-                    currentPlayerLogin = gameInfo.zoo_opponent_cards[playerId].player_login;
-                    break;
-                }
-            }
-        }
+        magpieCard.style.opacity = '0'; 
     }
+
+    const currentPlayerLogin = gameInfo.current_player_login;
 
     if (gameInfo.mole_player_cards && gameInfo.mole_player_cards.length > 0) {
         openMoleCardDialog(gameInfo.mole_player_cards, roomId);
@@ -115,11 +133,7 @@ function updateGameStatus(gameInfo) {
             const cardContainer = document.createElement('div');
             cardContainer.className = 'card-container';
     
-            playerInfo.zoo_cards.forEach(card => {
-                renderCard(card.card_id, card.calculated_type, card.card_type, (html) => {
-                    cardContainer.innerHTML += html;
-                });
-            });
+            updateCards(cardContainer, playerInfo.zoo_cards);
     
             playerDiv.appendChild(cardContainer);
             document.getElementById('opponents-zoo').appendChild(playerDiv);
@@ -146,82 +160,18 @@ function updateGameStatus(gameInfo) {
     }
 
     if (gameInfo.waterhole_cards) { 
-        const cardContainer = document.createElement('div');
-        cardContainer.className = 'card-container';
-    
-        gameInfo.waterhole_cards.forEach(card => {
-            renderCard(card.card_id, card.calculated_type, card.card_type, (html) => {
-                cardContainer.innerHTML += html;
-            });
-        });
-    
-        waterhole.appendChild(cardContainer);
-    
-        const cards = cardContainer.querySelectorAll('.card');
-        cards.forEach(card => {
-            card.addEventListener('click', (event) => {
-                const cardId = card.getAttribute('data-id');
-                if (cardId) {
-                    handleCardClick(cardId, card);
-                }
-            });
-        });
-    }
-    
-
-    if (gameInfo.magpie_card.has_card) {
-        renderCard(gameInfo.magpie_card.card_id, null, 'сорока-воровка', (html) => {
-            magpieCard.innerHTML = html;
-        });
+        updateCards('waterhole-cards', gameInfo.waterhole_cards);
     }
 
     if (gameInfo.my_player_info.zoo_cards) {
-        const cardContainer = document.createElement('div');
-        cardContainer.className = 'card-container';
-
-        gameInfo.my_player_info.zoo_cards.forEach(card => {
-            renderCard(card.card_id, card.calculated_type, card.card_type, (html) => {
-                cardContainer.innerHTML += html;
-            });
-        });
-
-        playerZoo.appendChild(cardContainer);
+        updateCards('player-zoo-cards', gameInfo.my_player_info.zoo_cards);
     }
+    
+    playerName.innerHTML = gameInfo.my_player_info.user_login;
 
     if (gameInfo.my_player_info.hand_cards) {
-        playerHand.innerHTML += `<h3>${gameInfo.my_player_info.user_login}</h3>`;
-        const cardContainer = document.createElement('div');
-        cardContainer.className = 'card-container';
-
-        gameInfo.my_player_info.hand_cards.forEach(card => {
-            renderCard(card.card_id, card.calculated_type, card.card_type, (html) => {
-                cardContainer.innerHTML += html;
-            });
-        });
-
-        playerHand.appendChild(cardContainer);
-
-        const cards = cardContainer.querySelectorAll('.card');
-        cards.forEach(card => {
-            card.addEventListener('click', (event) => {
-                const cardId = card.getAttribute('data-id');
-                if (cardId) {
-                    handleCardClick(cardId, card);
-                }
-            });
-        });
+        updateCards('player-hand-cards', gameInfo.my_player_info.hand_cards);
     }
-
-    gameStatus.innerHTML = `
-        <p>Текущий ход: ${currentPlayerLogin}</p>
-        <p id='timer'>Оставшееся время: ${formatTime(gameInfo.time_left)}</p>
-        <p>К-во карт в зоопарк: ${gameInfo.available_zoo_slots || '0'}</p>
-    `;
-}
-
-
-function formatTime(time) {
-    return (time === undefined || time < 0) ? 'Неизвестно' : `${time} сек`;
 }
 
 function drawCard(playerId) {
@@ -248,28 +198,28 @@ function drawCard(playerId) {
 
 function showCardInModal(id, calculatedType, cardType = null, message = "") {
     gameModalCard.showCardInModal(id, calculatedType, cardType, message);
-
-    if (cardType !== 'черная овечка') {
-        const waterhole = document.getElementById('waterhole');
+    getGameStatus(roomId);
+    // if (cardType !== 'черная овечка') {
+    //     const waterhole = document.getElementById('waterhole-cards');
         
-        if (waterhole) {
-            let cardContainer = waterhole.querySelector('.card-container');
+    //     if (waterhole) {
+    //         let cardContainer = waterhole.querySelector('.card-container');
             
-            if (!cardContainer) {
-                cardContainer = document.createElement('div');
-                cardContainer.className = 'card-container';
-                waterhole.appendChild(cardContainer); 
-            }
-            renderCard(id, calculatedType, cardType, (html) => {
-                cardContainer.innerHTML += html;
-            });
-        } else {
-            console.error("Не найден элемент с id 'waterhole'");
-        }
-    }
-    if (cardType === 'черная овечка') {
-        getGameStatus(roomId);
-    }
+    //         if (!cardContainer) {
+    //             cardContainer = document.createElement('div');
+    //             cardContainer.className = 'card-container';
+    //             waterhole.appendChild(cardContainer); 
+    //         }
+    //         renderCard(id, calculatedType, cardType, (html) => {
+    //             cardContainer.innerHTML += html;
+    //         });
+    //     } else {
+    //         console.error("Не найден элемент с id 'waterhole'");
+    //     }
+    // }
+    // if (cardType === 'черная овечка') {
+    //     getGameStatus(roomId);
+    // }
 }
 
 let roomId;
@@ -287,10 +237,31 @@ document.addEventListener("DOMContentLoaded", () => {
     //     addClickListenersToCards();
     // }, 1000); 
 
-    // setInterval(() => getGameStatus(roomId), 5000);
+    setInterval(() => getGameStatus(roomId), 5000);
 });
 
 document.getElementById('place-cards-btn').addEventListener('click', () => {
     placeCardsInZoo(roomId, selectedCards);
 });
 
+
+// let isUpdating = false;
+
+// function debounce(func, wait) {
+//     let timeout;
+//     return function(...args) {
+//         clearTimeout(timeout);
+//         timeout = setTimeout(() => func.apply(this, args), wait);
+//     };
+// }
+
+// const debouncedGetGameStatus = debounce(() => {
+//     if (!isUpdating) {
+//         isUpdating = true;
+//         getGameStatus(roomId).finally(() => {
+//             isUpdating = false;
+//         });
+//     }
+// }, 1000);
+
+// setInterval(debouncedGetGameStatus, 5000);

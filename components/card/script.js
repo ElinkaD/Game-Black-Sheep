@@ -1,4 +1,4 @@
-function renderCard(id, calculatedType, cardType = null, callback) {
+export function renderCard(id, calculatedType, cardType = null, callback) {
     fetch('../components/card/component.php', {
         method: 'POST',
         headers: {
@@ -20,5 +20,4 @@ function renderCard(id, calculatedType, cardType = null, callback) {
     });
 }
 
-export { renderCard };
 
