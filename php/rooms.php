@@ -13,6 +13,9 @@ render_dialog('rules-dialog', $rules, true);
 $roomForm = file_get_contents('../components/dialog/templates/create_room/template.php');
 render_dialog('create-room-dialog', $roomForm, true);
 
+$resetForm = file_get_contents('../components/dialog/templates/pass_reset/template.php');
+render_dialog('pass-reset-dialog', $resetForm, true);
+
 $zaglushka = file_get_contents('../components/dialog/templates/zaglushka/template.php');
 render_dialog('zaglushka-dialog', $zaglushka, false);
 ?>
@@ -22,6 +25,22 @@ render_dialog('zaglushka-dialog', $zaglushka, false);
 <head>
     <title>Игра Черная овечка</title>
     <link rel="stylesheet" href="../css/rooms.css">
+
+	<style>
+        @font-face {
+            font-family: 'RussianRail G Pro';
+            src: url('../fonts/RussianRail G Pro Regular_0.otf') format('opentype');
+            font-weight: normal;
+            font-style: normal;
+        }
+
+        @font-face {
+            font-family: 'Groboldov';
+            src: url('../fonts/Groboldov.otf') format('opentype');
+            font-weight: normal;
+            font-style: normal;
+        }
+    </style> 
 </head>
 <body>
 	<button data-show-dialog="rules-dialog" class="rules-button">правила</button>
@@ -30,6 +49,7 @@ render_dialog('zaglushka-dialog', $zaglushka, false);
 		<div class='header'>
 			<h2>Добро пожаловать, <?php echo $_SESSION['login'];?></h2>
 			<button id="quit-rooms-button">Выйти</button>
+            <button data-show-dialog="pass-reset-dialog">Сменить пароль</button>
 		</div>
 
 		<div class="settings">

@@ -1,7 +1,7 @@
 body{
     /* background-color: #F9FAF7; */
     background-image: url('../img/back.webp');
-    background-repeat: no-repeat; 
+    background-repeat: repeat-y; 
     background-position: center;  
     background-size: cover;
     
@@ -102,7 +102,7 @@ body{
 .game-panel {
     display: flex;
     justify-content: center;
-    align-items: flex-start;
+    align-items: center;
     gap: 5%;
 }
 
@@ -117,22 +117,16 @@ body{
 }
 
 #game-status {
-    width: 200px;
+    width: 300px;
     font-size: 16px;
     font-weight: bold;
     text-align: left;
     color: #4B4F4E;
+    font-family: 'RussianRail G Pro', sans-serif;
 }
 
-
-#waterhole, #player-zoo{
-    width: 99%;
-    height: 250px;
-    border-radius: 15px;
+#waterhole{
     border:5px solid #9AC6CB;
-    background-color: #f9faf7c5;
-
-    position: relative;
 }
 #player-zoo{
     border:5px solid #C8AE49;

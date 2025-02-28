@@ -1,17 +1,3 @@
-@font-face {
-    font-family: 'RussianRail G Pro';
-    src: url('../fonts/RussianRail G Pro Regular_0.otf') format('otf');
-    font-weight: normal;
-    font-style: normal;
-}
-
-@font-face {
-    font-family: 'Groboldov';
-    src: url('../fonts/Groboldov.otf') format('otf');
-    font-weight: normal;
-    font-style: normal;
-}
-
 body {
     font-family: 'RussianRail G Pro', sans-serif;
     display: flex;

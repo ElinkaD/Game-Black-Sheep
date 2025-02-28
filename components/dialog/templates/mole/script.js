@@ -23,18 +23,9 @@ function openMoleCardDialog(cards, roomId) {
     cards.forEach(card => {
         renderCard(card.card_id, card.calculated_type, null, (cardHtml) => {
             cardContainer.innerHTML += cardHtml; 
-
-            // const cardElement = cardContainer.querySelector(`[data-id="${card.card_id}"]`);
-            // if (cardElement) {
-            //     cardElement.addEventListener('click', () => {
-            //         handleCardClickMole(card.card_id, roomId, dialog);
-            //     });
-            // }
-
             setTimeout(() => {
                 const cardElement = cardContainer.querySelector(`[data-id="${card.card_id}"]`);
                 if (cardElement) {
-                    // cardElement.removeEventListener('click', handleCardClick);
                     cardElement.addEventListener('click', () => {
                         handleCardClickMole(card.card_id, roomId, dialog);
                     });

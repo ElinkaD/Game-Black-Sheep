@@ -50,13 +50,38 @@ $_SESSION['game'] = $response;
 	<link rel="stylesheet" href="../css/game.css">
 	<link rel="stylesheet" href="../components/card/style.css">
 	<link rel="stylesheet" href="../components/game_modal_card/style.css">
+
+	    <style>
+        @font-face {
+            font-family: 'RussianRail G Pro';
+            src: url('../fonts/RussianRail G Pro Regular_0.otf') format('opentype');
+            font-weight: normal;
+            font-style: normal;
+        }
+
+        @font-face {
+            font-family: 'Groboldov';
+            src: url('../fonts/Groboldov.otf') format('opentype');
+            font-weight: normal;
+            font-style: normal;
+        }
+
+		#waterhole, #player-zoo{
+			width: 99%;
+			height: 250px;
+			border-radius: 15px;
+			background-color: #f9faf7c5;
+
+			position: relative;
+		}
+    </style> 
 </head>
 </head>
 	<main class='game'>
 		<div class="left-panel">
 			<div class="room-info">
 				<h1>Комната №<?= htmlspecialchars($room_id) ?></h1>
-				<button id="quit-button" data-id-room="">Выйти</button>
+				<button id="quit-button" data-id-room="<?= htmlspecialchars($room_id) ?>">Выйти</button>
 			</div>
 			
 			<div id="opponents-zoo">
@@ -70,12 +95,12 @@ $_SESSION['game'] = $response;
 			</div>
 			<!-- Игровой экран -->
 			<div class="game-panel">
-				<div id="magpie-card">
+				<!-- <div id="magpie-card">
 					<div class='card' data-id='9999' data-type='сорока-воровка'>
 							<img src='../img/magpiethief.png' alt='Карта Сорока-воровка'>
 						</div>
 					</div>
-				<div class="waterhole-сard"></div>
+				<div class="waterhole-сard"></div> -->
 				<div id="game-status">
 						Текущий ход: <span id='hod'></span> </br>
 						Оставшееся время: <span id='timer'></span> сек </br>

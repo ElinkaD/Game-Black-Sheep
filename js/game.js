@@ -25,10 +25,10 @@ function handleCardClick(cardId, cardElement) {
     const cardIndex = selectedCards.indexOf(cardId);
     if (cardIndex === -1) {
         selectedCards.push(cardId);
-        cardElement.style.border = '3px solid green';
+        cardElement.style.boxShadow = '0px 0px 5px 5px #C8AE49';
     } else {
         selectedCards.splice(cardIndex, 1);
-        cardElement.style.border = '';
+        cardElement.style.boxShadow = '';
     }
 }
 
@@ -64,10 +64,11 @@ function updateCards(containerId, cardsData) {
 
 // Функция для получения статуса игры
 export function getGameStatus() {
-    fetch('../api/get_game_status.php', {
-        method: 'POST',
-        headers: {'Content-Type': 'application/json'},
-        body: JSON.stringify({ roomId })
+    const url = `../api/get_game_status.php?roomId=${roomId}`;
+
+    fetch(url, {
+        method: 'GET',
+        headers: {'Content-Type': 'application/json'} 
     })
     .then(response => response.json())
     .then(data => {
@@ -87,21 +88,36 @@ export function getGameStatus() {
 function updateGameStatus(gameInfo) {
     const opponentsZoo = document.getElementById('opponents-zoo');
     const playerName = document.getElementById('player-name');
-    const magpieCard = document.getElementById('magpie-card');
+    // const magpieCard = document.getElementById('magpie-card');
+    const timerElement = document.getElementById('timer'); 
 
-    // Очистка предыдущих данных
     opponentsZoo.innerHTML = '';
 
     document.getElementById('hod').innerHTML = gameInfo.current_player_login;
-    document.getElementById('timer').innerHTML = gameInfo.time_left;
     document.getElementById('ave-count').innerHTML = gameInfo.available_zoo_slots || '0';
 
+    let timeLeft = gameInfo.time_left;  
+    timerElement.innerHTML = timeLeft; 
 
-    if (gameInfo.magpie_card.has_card) {
-        magpieCard.style.opacity = '1'; 
-    } else {
-        magpieCard.style.opacity = '0'; 
+    if (window.timerInterval) {
+        clearInterval(window.timerInterval);
     }
+
+    window.timerInterval = setInterval(() => {
+        timeLeft -= 1;
+        timerElement.innerHTML = timeLeft;
+
+        if (timeLeft <= 0) {
+            clearInterval(window.timerInterval); 
+        }
+    }, 1000);
+
+
+    // if (gameInfo.magpie_card.has_card) {
+    //     magpieCard.style.opacity = '1'; 
+    // } else {
+    //     magpieCard.style.opacity = '0'; 
+    // }
 
     const currentPlayerLogin = gameInfo.current_player_login;
     const userLogin = gameInfo.my_player_info.user_login;
@@ -133,9 +149,13 @@ function updateGameStatus(gameInfo) {
             `;
 
             const cardContainer = document.createElement('div');
-            cardContainer.className = 'card-container';
-    
-            updateCards(cardContainer, playerInfo.zoo_cards);
+            cardContainer.className = 'card-container'
+
+            playerInfo.zoo_cards.forEach(card => {
+                renderCard(card.card_id, card.calculated_type, card.card_type, (html) => {
+                    cardContainer.innerHTML += html;
+                });
+            });
     
             playerDiv.appendChild(cardContainer);
             document.getElementById('opponents-zoo').appendChild(playerDiv);
@@ -252,25 +272,3 @@ document.getElementById('place-cards-btn').addEventListener('click', () => {
     placeCardsInZoo(roomId, selectedCards);
     getGameStatus(roomId);
 });
-
-
-// let isUpdating = false;
-
-// function debounce(func, wait) {
-//     let timeout;
-//     return function(...args) {
-//         clearTimeout(timeout);
-//         timeout = setTimeout(() => func.apply(this, args), wait);
-//     };
-// }
-
-// const debouncedGetGameStatus = debounce(() => {
-//     if (!isUpdating) {
-//         isUpdating = true;
-//         getGameStatus(roomId).finally(() => {
-//             isUpdating = false;
-//         });
-//     }
-// }, 1000);
-
-// setInterval(debouncedGetGameStatus, 5000);

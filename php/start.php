@@ -3,6 +3,21 @@
 <head>
     <title>Игра Черная овечка</title>
     <link rel="stylesheet" href="../css/start.css">
+    <style>
+        @font-face {
+            font-family: 'RussianRail G Pro';
+            src: url('../fonts/RussianRail G Pro Regular_0.otf') format('opentype');
+            font-weight: normal;
+            font-style: normal;
+        }
+
+        @font-face {
+            font-family: 'Groboldov';
+            src: url('../fonts/Groboldov.otf') format('opentype');
+            font-weight: normal;
+            font-style: normal;
+        }
+    </style> 
 </head>
 <body>
 	<button data-show-dialog="rules-dialog" class="rules-button">правила</button>

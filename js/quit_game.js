@@ -6,13 +6,11 @@ export function setupQuitButton(roomId) {
 
         fetch('../api/remove_player_from_game.php', {
             method: 'POST',
-            headers: {'Content-Type': 'application/x-www-form-urlencoded',},
-            body: new URLSearchParams({room: roomId}), 
+            headers: { "Content-Type": "application/json" },
+            body: JSON.stringify({ room: roomId }) 
         })
         .then(response => response.json())
         .then(data => {
-            quitButton.disabled = false;
-
             if (data.status === 'success') {
                 alert(data.message || 'Вы успешно вышли из игры.');
                 window.location.href = './rooms.php'; 
@@ -21,8 +19,6 @@ export function setupQuitButton(roomId) {
             }
         })
         .catch(error => {
-            quitButton.disabled = false;
-
             console.error('Ошибка при выходе из игры:', error);
             alert('Ошибка при выходе из игры');
         });
