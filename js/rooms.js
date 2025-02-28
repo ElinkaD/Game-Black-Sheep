@@ -77,4 +77,22 @@ document.addEventListener("DOMContentLoaded", () => {
             }
         }
     });
+
+    document.getElementById('quit-rooms-button').addEventListener('click', () => {
+        fetch('../api/logout.php', { method: 'POST' })
+            .then(response => response.json())
+            .then(data => {
+                if (data.status === 'success') {
+                    window.location.href = './start.php';
+                } else {
+                    alert('Ошибка при выходе: ' + (data.message || 'Неизвестная ошибка'));
+                }
+            })
+            .catch(error => {
+                console.error('Ошибка при выходе:', error);
+                alert('Ошибка при выходе');
+            });
+    });
+    
+    
 });

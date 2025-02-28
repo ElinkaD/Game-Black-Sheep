@@ -1,0 +1,60 @@
+@font-face {
+    font-family: 'RussianRail G Pro';
+    src: url('../fonts/RussianRail G Pro Regular_0.otf') format('otf');
+    font-weight: normal;
+    font-style: normal;
+}
+
+@font-face {
+    font-family: 'Groboldov';
+    src: url('../fonts/Groboldov.otf') format('otf');
+    font-weight: normal;
+    font-style: normal;
+}
+
+body {
+    font-family: 'RussianRail G Pro', sans-serif;
+    background-color: #F9FAF7;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    height: 100vh;
+    margin: 0;
+
+    background-color: #9AC6CB;
+}
+
+h1, h2, h3 {
+    font-family: 'Groboldov', sans-serif; 
+}
+
+h2 {
+    font-size: 2em;
+}
+
+.start {
+    text-align: center;
+    background-color: #F9FAF7;
+    padding: 6% 10%;
+    border-radius: 20px;
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+}
+
+.start h1 {
+    font-size: 2.5em;
+    color: #333;
+    margin-bottom: -20px;
+}
+
+.start p {
+    font-size: 1.2em;
+    color: #666;
+    margin-bottom: 20px;
+}
+
+.start div {
+    display: flex;
+    justify-content: center;
+    gap: 23.04px;
+}
+

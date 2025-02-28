@@ -1,6 +1,5 @@
 <form id="registerForm" method="POST">
     <h2>Регистрация</h2>
-    <div class='forms'>
         <div class="form-group">
             <input name="login" type="text" placeholder=" " required>
             <label for="login">
@@ -19,7 +18,6 @@
                 Повторите пароль
             </label>
         </div>
-    </div>
     <button type="submit">Зарегистрироваться</button>
 </form>
 

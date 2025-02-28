@@ -18,8 +18,6 @@
     transition: all 0.2s;
     transform: scale(0.98);
     will-change: transform;
-    user-select: none;
-    cursor: grab;
 }
 
 /* .card-container.active {

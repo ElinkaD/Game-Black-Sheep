@@ -1,7 +1,37 @@
 import gameModalCard from '../components/game_modal_card/script.js'; 
 import { renderCard } from '../components/card/script.js';
+import { placeCardsInZoo } from './zoo.js';
 import { openMoleCardDialog } from '../components/dialog/templates/mole/script.js';
-import { selectCard, placeCardsInZoo, updateZooUI, handleCardClick } from './zoo.js';
+import { openEagleCardDialog } from '../components/dialog/templates/eagle/script.js';
+import { setupQuitButton } from './quit_game.js';
+
+let currentCards = new Set();
+let selectedCards = [];
+
+function addClickListenersToCards() {
+    const cards = document.querySelectorAll('.card');    
+    cards.forEach(card => {
+        card.addEventListener('click', (event) => {
+            const cardId = card.getAttribute('data-id');
+            if (cardId) {
+                handleCardClick(cardId, card);  
+            }
+        });
+    });
+}
+
+function handleCardClick(cardId, cardElement) {
+    const cardIndex = selectedCards.indexOf(cardId);
+    if (cardIndex === -1) {
+        selectedCards.push(cardId);
+        cardElement.style.border = '3px solid green';
+    } else {
+        selectedCards.splice(cardIndex, 1);
+        cardElement.style.border = '';
+    }
+}
+
+
 
 // Функция для получения статуса игры
 export function getGameStatus() {
@@ -60,6 +90,11 @@ function updateGameStatus(gameInfo) {
         openMoleCardDialog(gameInfo.mole_player_cards, roomId);
     }
 
+    if (gameInfo.has_eagle_card) {
+        const opponents = gameInfo.zoo_opponent_cards; 
+        openEagleCardDialog(opponents, roomId);
+    }
+
     if (gameInfo.zoo_opponent_cards) {
         for (const playerId in gameInfo.zoo_opponent_cards) {
             const playerInfo = gameInfo.zoo_opponent_cards[playerId];
@@ -110,18 +145,29 @@ function updateGameStatus(gameInfo) {
         }
     }
 
-    if (gameInfo.waterhole_cards) {
+    if (gameInfo.waterhole_cards) { 
         const cardContainer = document.createElement('div');
         cardContainer.className = 'card-container';
-
+    
         gameInfo.waterhole_cards.forEach(card => {
             renderCard(card.card_id, card.calculated_type, card.card_type, (html) => {
                 cardContainer.innerHTML += html;
             });
         });
-
+    
         waterhole.appendChild(cardContainer);
+    
+        const cards = cardContainer.querySelectorAll('.card');
+        cards.forEach(card => {
+            card.addEventListener('click', (event) => {
+                const cardId = card.getAttribute('data-id');
+                if (cardId) {
+                    handleCardClick(cardId, card);
+                }
+            });
+        });
     }
+    
 
     if (gameInfo.magpie_card.has_card) {
         renderCard(gameInfo.magpie_card.card_id, null, 'сорока-воровка', (html) => {
@@ -154,8 +200,18 @@ function updateGameStatus(gameInfo) {
         });
 
         playerHand.appendChild(cardContainer);
+
+        const cards = cardContainer.querySelectorAll('.card');
+        cards.forEach(card => {
+            card.addEventListener('click', (event) => {
+                const cardId = card.getAttribute('data-id');
+                if (cardId) {
+                    handleCardClick(cardId, card);
+                }
+            });
+        });
     }
-    
+
     gameStatus.innerHTML = `
         <p>Текущий ход: ${currentPlayerLogin}</p>
         <p id='timer'>Оставшееся время: ${formatTime(gameInfo.time_left)}</p>
@@ -224,21 +280,17 @@ document.addEventListener("DOMContentLoaded", () => {
         alert('Ошибка: Комната не указана.');
         return;
     }
-
-    document.getElementById('place-cards-btn').addEventListener('click', () => {
-        placeCardsInZoo(roomId);
-    });
-
     getGameStatus(roomId);
+    setupQuitButton(roomId);
+
+    // setTimeout(() => {
+    //     addClickListenersToCards();
+    // }, 1000); 
+
     // setInterval(() => getGameStatus(roomId), 5000);
 });
 
-
-document.querySelectorAll('.card').forEach(card => {
-    card.addEventListener('click', () => {
-        const cardId = card.getAttribute('data-id');
-        if (cardId) {
-            handleCardClick(cardId); 
-        }
-    });
+document.getElementById('place-cards-btn').addEventListener('click', () => {
+    placeCardsInZoo(roomId, selectedCards);
 });
+

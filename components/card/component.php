@@ -29,22 +29,20 @@ function renderCard($id, $calculatedType = null, $cardType = null) {
         $cardConfig = $cardTypes[$type];
         $imagePath = $cardConfig['image_path'];
     }
-    
-    // onclick='handleCardClick({$id}
 
+    // onclick='handleCardClick({$id})'
+    
     return "
-    <div class='card' data-id='{$id}' data-type='{$type}' onclick='handleCardClick({$id})'>
+    <div class='card' data-id='{$id}' data-type='{$type}'>
         <img src='{$imagePath}' alt='Карта {$type}'>
     </div>";
 }
 
 if ($_SERVER['REQUEST_METHOD'] === 'POST') {
-    // Получение данных
     $id = $_POST['id'];
     $calculatedType = $_POST['calculated_type'];
     $cardType = $_POST['card_type'];
 
-    // Вывод карты
     echo renderCard($id, $calculatedType, $cardType);
 }
 ?>

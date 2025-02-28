@@ -11,7 +11,7 @@ if (!isset($_SESSION['token'])) {
 $player = $_POST['player'] ?? null;
 $animal_type = $_POST['animal_type'] ?? null;
 
-if (empty($type) || empty($player)) {
+if (empty($animal_type) || empty($player)) {
 	echo json_encode(['status' => 'error', 'message' => 'Not enough info']);
 	exit;
 }

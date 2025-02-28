@@ -12,6 +12,8 @@
 
     margin-top: 20px;
     margin-left: 5px;
+
+    pointer-events: auto;
 }
 .card:hover {
     transform: scale(1.05);

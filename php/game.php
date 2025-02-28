@@ -17,6 +17,9 @@ render_modal__card();
 $mole = file_get_contents('../components/dialog/templates/mole/template.php');
 render_dialog('mole-dialog', form_content: $mole);
 
+$eagle = file_get_contents('../components/dialog/templates/eagle/template.php');
+render_dialog('eagle-dialog', form_content: $eagle);
+
 
 $room_id = $_GET['room_id'] ?? null;
 

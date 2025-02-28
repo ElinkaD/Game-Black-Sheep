@@ -8,16 +8,15 @@ if (!isset($_SESSION['token'])) {
 	exit;
 }
 
-$room = $_POST['room'] ?? null;
-$cards = $_POST['cards'] ?? [];
+$room = isset($_POST['room']) ? intval($_POST['room']) : null;
+$cards = isset($_POST['cards']) ? $_POST['cards'] : [];
 
-if (empty($room) || empty($cards) || !is_array($cards)) {
+if (empty($room)) {
 	echo json_encode(['status' => 'error', 'message' => 'Not enough info']);
 	exit;
 }
 
-$cards_sql = '{' . implode(',', array_map('intval', $cards)) . '}'; // Преобразуем массив в формат PostgreSQL
-
+$cards_sql = '{' . implode(',', $cards) . '}'; 
 
 $stmt = $pdo->prepare('SELECT s338859.place_in_zoo(:t, :room, :cards::integer[])');
 $stmt->execute(['t' => $_SESSION['token'], 'room' => $room, 'cards' => $cards_sql]);

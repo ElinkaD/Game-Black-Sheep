@@ -23,14 +23,14 @@ document.addEventListener("DOMContentLoaded", () => {
         });
     });
 
-    const body = document.querySelector('body');
-    body.addEventListener('click', (event) => {
-        if (event.target === body && document.body.classList.contains('dialog-open')) {
-            const openDialog = document.querySelector("dialog[open]");
-            if (openDialog) {
-                openDialog.close();
-                document.body.classList.remove("dialog-open");
-            }
-        }
-    });
+    // const body = document.querySelector('body');
+    // body.addEventListener('click', (event) => {
+    //     if (event.target === body && document.body.classList.contains('dialog-open')) {
+    //         const openDialog = document.querySelector("dialog[open]");
+    //         if (openDialog) {
+    //             openDialog.close();
+    //             document.body.classList.remove("dialog-open");
+    //         }
+    //     }
+    // });
 });

@@ -1,4 +1,7 @@
 import { renderCard } from '/~s338859/Game-Black-Sheep/components/card/script.js';
+import { getGameStatus } from '/~s338859/Game-Black-Sheep/js/game.js'; 
+
+
 
 function openMoleCardDialog(cards, roomId) {
     const dialog = document.querySelector('[data-dialog-name="mole-dialog"]');
@@ -21,17 +24,27 @@ function openMoleCardDialog(cards, roomId) {
         renderCard(card.card_id, card.calculated_type, null, (cardHtml) => {
             cardContainer.innerHTML += cardHtml; 
 
-            const cardElement = cardContainer.querySelector(`[data-id="${card.card_id}"]`);
-            if (cardElement) {
-                cardElement.addEventListener('click', () => {
-                    handleCardClick(card.card_id, roomId);
-                });
-            }
+            // const cardElement = cardContainer.querySelector(`[data-id="${card.card_id}"]`);
+            // if (cardElement) {
+            //     cardElement.addEventListener('click', () => {
+            //         handleCardClickMole(card.card_id, roomId, dialog);
+            //     });
+            // }
+
+            setTimeout(() => {
+                const cardElement = cardContainer.querySelector(`[data-id="${card.card_id}"]`);
+                if (cardElement) {
+                    // cardElement.removeEventListener('click', handleCardClick);
+                    cardElement.addEventListener('click', () => {
+                        handleCardClickMole(card.card_id, roomId, dialog);
+                    });
+                }
+            }, 1000); 
         });
     });
 }
 
-function handleCardClick(cardId, roomId) {
+function handleCardClickMole(cardId, roomId, dialog) {
     fetch('../api/select_one_card.php', {
         method: 'POST',
         headers: {
@@ -47,7 +60,7 @@ function handleCardClick(cardId, roomId) {
         if (data.status === 'success') {
             alert(data.message);
             dialog.close();
-            document.body.classList.remove("dialog-open");
+            getGameStatus();
         } else {
             alert('Ошибка: ' + data.message);
         }
