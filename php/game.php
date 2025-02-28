@@ -10,15 +10,18 @@ include '../components/dialog/component.php';
 include '../components/game_modal_card/component.php';
 
 $rules = file_get_contents('../components/dialog/templates/rules/template.php');
-render_dialog('rules-dialog', form_content: $rules);
+render_dialog('rules-dialog', $rules, true);
 
 render_modal__card();
 
 $mole = file_get_contents('../components/dialog/templates/mole/template.php');
-render_dialog('mole-dialog', form_content: $mole);
+render_dialog('mole-dialog',  $mole, false);
 
 $eagle = file_get_contents('../components/dialog/templates/eagle/template.php');
-render_dialog('eagle-dialog', form_content: $eagle);
+render_dialog('eagle-dialog',  $eagle, false);
+
+$zaglushka = file_get_contents('../components/dialog/templates/zaglushka/template.php');
+render_dialog('zaglushka-dialog', $zaglushka, false);
 
 
 $room_id = $_GET['room_id'] ?? null;

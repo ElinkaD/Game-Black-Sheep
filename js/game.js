@@ -8,8 +8,9 @@ import { setupQuitButton } from './quit_game.js';
 const cardContainers = new Map();
 let selectedCards = [];
 
-function addClickListenersToCards() {
-    const cards = document.querySelectorAll('.card');    
+function addClickListenersToCards(containerId) {
+    const container = document.getElementById(containerId);
+    const cards = container.querySelectorAll('.card');    
     cards.forEach(card => {
         card.addEventListener('click', (event) => {
             const cardId = card.getAttribute('data-id');
@@ -103,6 +104,7 @@ function updateGameStatus(gameInfo) {
     }
 
     const currentPlayerLogin = gameInfo.current_player_login;
+    const userLogin = gameInfo.my_player_info.user_login;
 
     if (gameInfo.mole_player_cards && gameInfo.mole_player_cards.length > 0) {
         openMoleCardDialog(gameInfo.mole_player_cards, roomId);
@@ -161,16 +163,26 @@ function updateGameStatus(gameInfo) {
 
     if (gameInfo.waterhole_cards) { 
         updateCards('waterhole-cards', gameInfo.waterhole_cards);
+        if(currentPlayerLogin === userLogin){
+            setTimeout(() => {
+                addClickListenersToCards('waterhole-cards');
+            }, 1000)
+        }
     }
 
     if (gameInfo.my_player_info.zoo_cards) {
         updateCards('player-zoo-cards', gameInfo.my_player_info.zoo_cards);
     }
     
-    playerName.innerHTML = gameInfo.my_player_info.user_login;
+    playerName.innerHTML = userLogin;
 
     if (gameInfo.my_player_info.hand_cards) {
         updateCards('player-hand-cards', gameInfo.my_player_info.hand_cards);
+        if(currentPlayerLogin === userLogin){
+            setTimeout(() => {
+                addClickListenersToCards('player-hand-cards');
+            }, 1000)
+        }
     }
 }
 
@@ -198,7 +210,7 @@ function drawCard(playerId) {
 
 function showCardInModal(id, calculatedType, cardType = null, message = "") {
     gameModalCard.showCardInModal(id, calculatedType, cardType, message);
-    getGameStatus(roomId);
+    
     // if (cardType !== 'черная овечка') {
     //     const waterhole = document.getElementById('waterhole-cards');
         
@@ -217,9 +229,9 @@ function showCardInModal(id, calculatedType, cardType = null, message = "") {
     //         console.error("Не найден элемент с id 'waterhole'");
     //     }
     // }
-    // if (cardType === 'черная овечка') {
-    //     getGameStatus(roomId);
-    // }
+    if (cardType === 'черная овечка') {
+        getGameStatus(roomId);
+    }
 }
 
 let roomId;
@@ -233,15 +245,12 @@ document.addEventListener("DOMContentLoaded", () => {
     getGameStatus(roomId);
     setupQuitButton(roomId);
 
-    // setTimeout(() => {
-    //     addClickListenersToCards();
-    // }, 1000); 
-
-    setInterval(() => getGameStatus(roomId), 5000);
+    setInterval(() => getGameStatus(roomId), 10000);
 });
 
 document.getElementById('place-cards-btn').addEventListener('click', () => {
     placeCardsInZoo(roomId, selectedCards);
+    getGameStatus(roomId);
 });
 
 

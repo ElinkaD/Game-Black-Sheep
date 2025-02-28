@@ -8,10 +8,13 @@ include '../api/db_connect.php';
 include '../components/dialog/component.php';
 
 $rules = file_get_contents('../components/dialog/templates/rules/template.php');
-render_dialog('rules-dialog', $rules);
+render_dialog('rules-dialog', $rules, true);
 
 $roomForm = file_get_contents('../components/dialog/templates/create_room/template.php');
-render_dialog('create-room-dialog', $roomForm);
+render_dialog('create-room-dialog', $roomForm, true);
+
+$zaglushka = file_get_contents('../components/dialog/templates/zaglushka/template.php');
+render_dialog('zaglushka-dialog', $zaglushka, false);
 ?>
 
 <!DOCTYPE html>

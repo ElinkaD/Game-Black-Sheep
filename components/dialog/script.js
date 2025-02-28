@@ -2,6 +2,13 @@ document.addEventListener("DOMContentLoaded", () => {
     const openButtons = document.querySelectorAll("[data-show-dialog]");
     const closeButtons = document.querySelectorAll(".close");
 
+    if (window.innerWidth < 1024) {
+        const zaglushka = document.querySelector("[data-dialog-name='zaglushka-dialog']");
+        if (zaglushka) {
+            zaglushka.showModal();
+        }
+    }
+
     openButtons.forEach(button => {
         button.addEventListener("click", () => {
             const dialogName = button.getAttribute("data-show-dialog");

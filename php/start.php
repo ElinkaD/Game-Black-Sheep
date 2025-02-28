@@ -19,13 +19,16 @@
         include '../components/dialog/component.php';
 
         $authForm = file_get_contents('../components/dialog/templates/auth/template.php');
-        render_dialog('auth-dialog', $authForm);
+        render_dialog('auth-dialog', $authForm, true);
 
         $regForm = file_get_contents('../components/dialog/templates/reg/template.php');
-        render_dialog('register-dialog', $regForm);
+        render_dialog('register-dialog', $regForm, true);
 
         $rules = file_get_contents('../components/dialog/templates/rules/template.php');
-        render_dialog('rules-dialog', $rules);
+        render_dialog('rules-dialog', $rules, true);
+
+        $zaglushka = file_get_contents('../components/dialog/templates/zaglushka/template.php');
+        render_dialog('zaglushka-dialog', $zaglushka, false);
         ?>
     </main>
 </body>

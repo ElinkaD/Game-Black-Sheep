@@ -8,8 +8,7 @@ if (!isset($_SESSION['token'])) {
     exit;
 }
 
-$data = json_decode(file_get_contents('php://input'), true);
-$room = isset($data['roomId']) ?? null;
+$room = $_POST['room'] ?? null;
 if (empty($room)) {
     echo json_encode(['status' => 'error', 'message' => 'Write all the information']);
     exit;

@@ -1,35 +1,38 @@
+body{
+    /* background-color: #F9FAF7; */
+    background-image: url('../img/back.webp');
+    background-repeat: no-repeat; 
+    background-position: center;  
+    background-size: cover;
+    
+    font-family: 'RussianRail G Pro', sans-serif;
+}
 .game {
     display: flex;
-    height: 100vh;
-    background-color: #F9FAF7;
+    justify-content: space-between;
+    height: 97vh;
+    width: 97vw;
     position: relative;
+    padding: 0;
 }
 
 .card-container {
     display: flex;
     gap: 10px;
-    margin: 10px 0;
     padding-bottom: 10px;
     
     position: relative;
     width: 100%;
     overflow-x: auto;
     white-space: nowrap;
-    transition: all 0.2s;
+    /* transition: all 0.2s;
     transform: scale(0.98);
-    will-change: transform;
+    will-change: transform; */
 }
 
-/* .card-container.active {
-    cursor: grabbing;
-    cursor: -webkit-grabbing;
-    transform: scale(1);
-} */
-
-
 .left-panel {
-    width: 40%;
-    padding: 20px;
+    width: 30%;
+    padding: 80px;
 }
 
 .room-info {
@@ -85,8 +88,8 @@
 
 
 .right-panel {
-    width: 60%;
-    padding: 20px;
+    width: 50%;
+    padding: 60px;
     display: flex;
     flex-direction: column;
     gap: 20px;
@@ -96,16 +99,10 @@
     margin-left: auto;
 }
 
- #player-zoo, #player-hand, #waterhole {
-    padding: 15px;
-    border: 1px solid #ccc;
-    border-radius: 5px;
-}
-
 .game-panel {
     display: flex;
     justify-content: center;
-    align-items: center;
+    align-items: flex-start;
     gap: 5%;
 }
 
@@ -125,4 +122,29 @@
     font-weight: bold;
     text-align: left;
     color: #4B4F4E;
+}
+
+
+#waterhole, #player-zoo{
+    width: 99%;
+    height: 250px;
+    border-radius: 15px;
+    border:5px solid #9AC6CB;
+    background-color: #f9faf7c5;
+
+    position: relative;
+}
+#player-zoo{
+    border:5px solid #C8AE49;
+}
+
+h3{
+    margin-bottom: -15px;
+    font-size: 32px;
+    text-align: right;
+    margin-right: 10px;
+}
+
+#place-cards-btn{
+    width: auto;
 }

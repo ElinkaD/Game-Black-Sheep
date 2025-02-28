@@ -9,7 +9,7 @@
 <p>Вы вытянули карту Орла — прирождённого лидера! Выбери игрока и спроси, есть ли у него определённое животное.</p>
 <form id="eagle-card-container" method="POST">
     <div class="form-group">
-        <label>Выберите игрока:</label>
+        <!-- <label>Выберите игрока:</label> -->
         <select id="player-select" class="form-control"> </select>
     </div>
     <div class="form-group">

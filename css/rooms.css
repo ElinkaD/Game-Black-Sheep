@@ -4,17 +4,17 @@ body {
     margin: 0;
     padding: 0;
     color: #333;
-    /* background-image: url('../img/water.png'); 
-    background-size: cover; 
-    background-position: center; 
-    background-repeat: no-repeat; 
-    min-height: 100vh; */
-    background-color: #9AC6CB;
+
 
     display: flex;
     justify-content: center;
     align-items: center;
-
+    
+    /* background-color: #9AC6CB; */
+    background-image: url('../img/back.webp');
+    background-repeat: no-repeat; 
+    background-position: center;  
+    background-size: cover;
 }
 
 .rooms {

@@ -14,14 +14,17 @@
 
 body {
     font-family: 'RussianRail G Pro', sans-serif;
-    background-color: #F9FAF7;
     display: flex;
     justify-content: center;
     align-items: center;
     height: 100vh;
     margin: 0;
 
-    background-color: #9AC6CB;
+    /* background-color: #9AC6CB; */
+    background-image: url('../img/back.webp');
+    background-repeat: no-repeat; 
+    background-position: center;  
+    background-size: cover;
 }
 
 h1, h2, h3 {
