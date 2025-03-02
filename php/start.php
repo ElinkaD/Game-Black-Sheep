@@ -20,7 +20,7 @@
     </style> 
 </head>
 <body>
-	<button data-show-dialog="rules-dialog" class="rules-button">правила</button>
+	<button data-show-dialog="rules-dialog" class="rules-button"></button>
 
     <main class="start">
         <h1>Чёрная овечка</h1>

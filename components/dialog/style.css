@@ -120,9 +120,16 @@ button:active {
 .rules-button {
     position: fixed;
     top: 4%; 
-    right: 4%; 
-}
+    right: 3%; 
 
+    background-image: url('../../img/rules.png'); 
+    background-size: 60%;
+    background-position: center;
+    background-repeat: no-repeat;
+
+    width: 70px;
+    height: 70px;
+}
 
 .form-group select {
     width: 100%;
@@ -152,11 +159,21 @@ button:active {
     font-size: 16px;
 }
 
+.admin_del{
+    display: flex;
+    gap: 20px;
+
+    height: 42px;
+}
+
+#delete-all-arooms{
+    width: 50%;
+}
 
 p, ul, ol {
-    font-size: 1.1rem;
+    font-size: 1.3rem;
     color: #555;
-    line-height: 1.6;
+    margin: 0;
 }
 
 ol {
@@ -188,3 +205,5 @@ ol {
 h1{
     font-family: 'Groboldov', sans-serif; 
 }
+
+

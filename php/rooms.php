@@ -18,6 +18,9 @@ render_dialog('pass-reset-dialog', $resetForm, true);
 
 $zaglushka = file_get_contents('../components/dialog/templates/zaglushka/template.php');
 render_dialog('zaglushka-dialog', $zaglushka, false);
+
+$adminka = file_get_contents('../components/dialog/templates/adminka/template.php');
+render_dialog('adminka-dialog', $adminka, true);
 ?>
 
 <!DOCTYPE html>
@@ -43,13 +46,22 @@ render_dialog('zaglushka-dialog', $zaglushka, false);
     </style> 
 </head>
 <body>
-	<button data-show-dialog="rules-dialog" class="rules-button">правила</button>
+	<button data-show-dialog="rules-dialog" class="rules-button"></button>
 
 	<main class='rooms'>
 		<div class='header'>
 			<h2>Добро пожаловать, <?php echo $_SESSION['login'];?></h2>
-			<button id="quit-rooms-button">Выйти</button>
+			<button id="quit-rooms-button">
+                <img src='../img/door.svg'>
+            </button>
             <button data-show-dialog="pass-reset-dialog">Сменить пароль</button>
+            <?php
+            if($_SESSION['role'] == 'admin'){
+            ?>
+                <button data-show-dialog="adminka-dialog">Админка</button>
+            <?php
+            }
+            ?>
 		</div>
 
 		<div class="settings">

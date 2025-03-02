@@ -98,3 +98,13 @@ body {
 .rooms-list li {
     animation: fadeIn 0.3s ease-in-out;
 }
+
+#quit-rooms-button{
+    padding: 0 10px;
+}
+
+#quit-rooms-button img {
+    width: 50px;
+    height: 50px;
+    object-fit: contain;
+}

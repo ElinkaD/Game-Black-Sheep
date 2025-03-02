@@ -20,6 +20,7 @@ $response = json_decode($result, true);
 if ($response && isset($response['status']) && $response['status'] === 'success') {
 	$_SESSION['token'] = $response['token'];
 	$_SESSION['login'] = $login;
+	$_SESSION['role'] = $response['role'];
 
 	echo json_encode([
 		'status' => 'success',

@@ -15,10 +15,10 @@ render_dialog('rules-dialog', $rules, true);
 render_modal__card();
 
 $mole = file_get_contents('../components/dialog/templates/mole/template.php');
-render_dialog('mole-dialog',  $mole, false);
+render_dialog('mole-dialog',  $mole, true);
 
 $eagle = file_get_contents('../components/dialog/templates/eagle/template.php');
-render_dialog('eagle-dialog',  $eagle, false);
+render_dialog('eagle-dialog',  $eagle, true);
 
 $zaglushka = file_get_contents('../components/dialog/templates/zaglushka/template.php');
 render_dialog('zaglushka-dialog', $zaglushka, false);
@@ -65,61 +65,60 @@ $_SESSION['game'] = $response;
             font-weight: normal;
             font-style: normal;
         }
-
-		#waterhole, #player-zoo{
-			width: 99%;
-			height: 250px;
-			border-radius: 15px;
-			background-color: #f9faf7c5;
-
-			position: relative;
-		}
     </style> 
 </head>
 </head>
 	<main class='game'>
-		<div class="left-panel">
-			<div class="room-info">
-				<h1>Комната №<?= htmlspecialchars($room_id) ?></h1>
-				<button id="quit-button" data-id-room="<?= htmlspecialchars($room_id) ?>">Выйти</button>
+		<div class="zoo_water">
+			<div class="left-panel">
+				<div class="room-info">
+					<h1>Комната №<?= htmlspecialchars(string: $room_id) ?></h1>
+					<button id="quit-button" data-id-room="<?= htmlspecialchars($room_id) ?>">
+						<img src='../img/door.svg'>
+					</button>
+				</div>
+				<h3>Зоопарки игроков</h3>
+				<div id="opponents-zoo">
+					<div class="card-container" id="opponent-cards"></div>
+				</div>
 			</div>
-			
-			<div id="opponents-zoo">
-				<div class="card-container" id="opponent-cards"></div>
+			<div class="right-panel">
+				<div class="rules">
+					<button data-show-dialog="rules-dialog" class="rules-button"></button>
+				</div>
+				<h3 id="water">Водопой</h3>
+				<div id="waterhole">
+					<div id="waterhole-cards" class="card-container"></div>
+				</div>
+				<h3>Твой зоопарк </h3>
+				<div id="player-zoo">
+					<div id="player-zoo-cards" class="card-container"></div>
+				</div>
 			</div>
 		</div>
 
-		<div class="right-panel">
-			<div class="rules">
-				<button data-show-dialog="rules-dialog">Правила</button>
-			</div>
-			<!-- Игровой экран -->
-			<div class="game-panel">
-				<!-- <div id="magpie-card">
-					<div class='card' data-id='9999' data-type='сорока-воровка'>
-							<img src='../img/magpiethief.png' alt='Карта Сорока-воровка'>
-						</div>
-					</div>
-				<div class="waterhole-сard"></div> -->
-				<div id="game-status">
-						Текущий ход: <span id='hod'></span> </br>
-						Оставшееся время: <span id='timer'></span> сек </br>
-						К-во карт в зоопарк: <span id='ave-count'></span>
-				</div>
-			</div>
-			<div id="waterhole">
-				<div id="waterhole-cards" class="card-container"></div>
-			</div>
-			<div id="player-zoo">
-				<div id="player-zoo-cards" class="card-container"></div>
-			</div>
+		<div class="game-panel">
 			<div id="player-hand">
-				<h3 id="player-name"></h3>
+				<h3 id="player-name">Твои карты на руках, </h3>
 				<div id="player-hand-cards" class="card-container"></div>
 			</div>
-			<button id="place-cards-btn">Карты в зоопарк</button>
+			<div class="game-status-panel">
+				<div id="game-status">
+						<p>Текущий ход: <span id='hod'></span></p>
+						<p>Оставшееся время: <span id='timer'></span> сек</p>
+						<p>К-во карт в зоопарк: <span id='ave-count'></span></p>
+				</div>
+				<button id="place-cards-btn">Карты в зоопарк</button>
+			</div>
 		</div>
 	</main>
 	<script type="module" src="../js/game.js"></script>
 	<script type="module" src="../js/zoo.js"></script>
 </html>
+
+			<!-- <div id="magpie-card">
+					<div class='card' data-id='9999' data-type='сорока-воровка'>
+							<img src='../img/magpiethief.png' alt='Карта Сорока-воровка'>
+						</div>
+					</div>
+				<div class="waterhole-сard"></div> -->

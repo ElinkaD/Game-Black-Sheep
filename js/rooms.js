@@ -64,6 +64,8 @@ function joinRoom(roomId) {
 
 document.addEventListener("DOMContentLoaded", () => {
     updateRoomsList();
+    setTimeout(updateRoomsList, 10000);
+    
     document.getElementById("room_refresh").addEventListener("click", updateRoomsList);
     
     document.querySelector('.rooms-list').addEventListener('click', (event) => {
@@ -93,6 +95,4 @@ document.addEventListener("DOMContentLoaded", () => {
                 alert('Ошибка при выходе');
             });
     });
-    
-    
 });

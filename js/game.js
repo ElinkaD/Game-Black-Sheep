@@ -3,7 +3,8 @@ import { renderCard } from '../components/card/script.js';
 import { placeCardsInZoo } from './zoo.js';
 import { openMoleCardDialog } from '../components/dialog/templates/mole/script.js';
 import { openEagleCardDialog } from '../components/dialog/templates/eagle/script.js';
-import { setupQuitButton } from './quit_game.js';
+import { setupQuitButton, quitGame } from './quit_game.js';
+import { deleteGame } from './delete.js';
 
 const cardContainers = new Map();
 let selectedCards = [];
@@ -25,7 +26,7 @@ function handleCardClick(cardId, cardElement) {
     const cardIndex = selectedCards.indexOf(cardId);
     if (cardIndex === -1) {
         selectedCards.push(cardId);
-        cardElement.style.boxShadow = '0px 0px 5px 5px #C8AE49';
+        cardElement.style.boxShadow = '0px 0px 7px 7px rgb(200, 175, 73)';
     } else {
         selectedCards.splice(cardIndex, 1);
         cardElement.style.boxShadow = '';
@@ -64,7 +65,7 @@ function updateCards(containerId, cardsData) {
 
 // Функция для получения статуса игры
 export function getGameStatus() {
-    const url = `../api/get_game_status.php?roomId=${roomId}`;
+    const url = `../api/get_game_status.php?room_id=${roomIdGame}`;
 
     fetch(url, {
         method: 'GET',
@@ -74,9 +75,21 @@ export function getGameStatus() {
     .then(data => {
         console.log("JSON-данные:", data);
         if (data.status === 'success') {
+            openEagleCardDialog(data.info.zoo_opponent_cards, roomIdGame);
+            if (data.info.count_players <= 1 && data.info.current_turn_player != null) {
+                alert('Игра завершена!');
+                deleteGame(roomIdGame); 
+                window.location.href = './rooms.php';
+            }
+
+            if (data.info.game_winner != 'false') {
+                alert(data.info.game_winner);
+                quitGame(roomIdGame); 
+            }
+            
             updateGameStatus(data.info); 
         } else {
-            alert('Ошибка получения статуса игры: ' + (data.message || 'Неизвестная ошибка'));
+            console.log('Ошибка получения статуса игры: ' + (data.message || 'Неизвестная ошибка'));
         }
     })
     .catch(error => {
@@ -123,12 +136,12 @@ function updateGameStatus(gameInfo) {
     const userLogin = gameInfo.my_player_info.user_login;
 
     if (gameInfo.mole_player_cards && gameInfo.mole_player_cards.length > 0) {
-        openMoleCardDialog(gameInfo.mole_player_cards, roomId);
+        openMoleCardDialog(gameInfo.mole_player_cards, roomIdGame);
     }
 
     if (gameInfo.has_eagle_card) {
         const opponents = gameInfo.zoo_opponent_cards; 
-        openEagleCardDialog(opponents, roomId);
+        openEagleCardDialog(opponents, roomIdGame); 
     }
 
     if (gameInfo.zoo_opponent_cards) {
@@ -143,7 +156,7 @@ function updateGameStatus(gameInfo) {
         
             playerDiv.innerHTML = `
                 <div class="opponent-header">
-                    <p class="player-login">${playerLogin}</p>
+                    <p class="player-login">Игрок ${playerLogin}</p>
                     <p class="cards-count">К-во карт: ${playerInfo.cards_in_hand_count}</p>
                 </div>
             `;
@@ -194,7 +207,7 @@ function updateGameStatus(gameInfo) {
         updateCards('player-zoo-cards', gameInfo.my_player_info.zoo_cards);
     }
     
-    playerName.innerHTML = userLogin;
+    playerName.innerHTML += userLogin;
 
     if (gameInfo.my_player_info.hand_cards) {
         updateCards('player-hand-cards', gameInfo.my_player_info.hand_cards);
@@ -250,25 +263,26 @@ function showCardInModal(id, calculatedType, cardType = null, message = "") {
     //     }
     // }
     if (cardType === 'черная овечка') {
-        getGameStatus(roomId);
+        getGameStatus();
     }
 }
 
-let roomId;
+let roomIdGame;
 
 document.addEventListener("DOMContentLoaded", () => {
-    roomId = new URLSearchParams(window.location.search).get('room_id');
-    if (!roomId) {
+    roomIdGame = new URLSearchParams(window.location.search).get('room_id');
+    if (!roomIdGame) {
         alert('Ошибка: Комната не указана.');
         return;
     }
-    getGameStatus(roomId);
-    setupQuitButton(roomId);
 
-    setInterval(() => getGameStatus(roomId), 10000);
+    getGameStatus();
+    setupQuitButton();
+
+    // setInterval(() => getGameStatus(), 10000);
 });
 
 document.getElementById('place-cards-btn').addEventListener('click', () => {
-    placeCardsInZoo(roomId, selectedCards);
-    getGameStatus(roomId);
+    placeCardsInZoo(roomIdGame, selectedCards);
+    getGameStatus();
 });

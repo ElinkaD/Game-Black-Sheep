@@ -8,13 +8,9 @@ if (!isset($_SESSION['token'])) {
 	exit;
 }
 
-$player = $_POST['player'] ?? null;
-$animal_type = $_POST['animal_type'] ?? null;
-
-if (empty($animal_type) || empty($player)) {
-	echo json_encode(['status' => 'error', 'message' => 'Not enough info']);
-	exit;
-}
+$data = json_decode(file_get_contents("php://input"), true);
+$player = isset($data['player']) ? $data['player'] : null;
+$animal_type = isset($data['animal_type']) ? $data['animal_type'] : null;
 
 $stmt = $pdo->prepare('SELECT s338859.request_card(:t, :player, :animal_type)');
 $stmt->execute(['t' => $_SESSION['token'], 'player' => $player, 'animal_type' => $animal_type]);
@@ -29,6 +25,7 @@ if ($response && isset($response['status']) && $response['status'] === 'success'
 		'info' => $response
 	]);
 } else {
+	error_log('Error in request_card: ' . json_encode($response));
 	echo json_encode([
 		'status' => 'error',
 		'message' => $response['message'] ?? 'Error'

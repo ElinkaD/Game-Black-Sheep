@@ -2,7 +2,7 @@ import { getGameStatus } from '/~s338859/Game-Black-Sheep/js/game.js';
 
 
 
-function openEagleCardDialog(opponents, roomId) {
+function openEagleCardDialog(opponents) {
     const dialog = document.querySelector('[data-dialog-name="eagle-dialog"]');
     if (!dialog) {
         console.error("Диалог не найден");
@@ -48,38 +48,42 @@ function openEagleCardDialog(opponents, roomId) {
             return;
         }
 
-        useEagleCard(playerId, animalType, roomId, dialog);
+        useEagleCard(playerId, animalType, dialog);
     });
 
     cancelEagleCardButton.addEventListener('click', () => {
-        useEagleCard(null, null, roomId, dialog); 
+        useEagleCard(null, null, dialog); 
     });
 }
 
-function useEagleCard(playerId, animalType, roomId, dialog) {
-    fetch('../api/request_card.php', {
+function useEagleCard(playerId, animalType, dialog) {
+    fetch('/~s338859/Game-Black-Sheep/api/request_card.php', {  
         method: 'POST',
         headers: {
-            'Content-Type': 'application/x-www-form-urlencoded',
+            'Content-Type': 'application/json',
         },
-        body: new URLSearchParams({
+        body: JSON.stringify({
             player: playerId,
             animal_type: animalType,
         }),
     })
-    .then(response => response.json())
+    .then(response => {
+        if (!response.ok) {
+            throw new Error(`Ошибка HTTP: ${response.status}`);
+        }
+        return response.json();
+    })
     .then(data => {
         if (data.status === 'success') {
             alert(data.message);
             dialog.close();
-            getGameStatus(roomId); 
+            getGameStatus(); 
         } else {
-            alert(data.message || 'Ошибка при использовании карты Орла');
+            alert(data.message);
         }
     })
     .catch(error => {
-        console.error('Ошибка при использовании карты Орла:', error);
-        alert('Ошибка при использовании карты Орла');
+        console.log('Ошибка при использовании карты Орла:', error);
     })
     .finally(() => {
         dialog.close(); 
