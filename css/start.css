@@ -38,7 +38,7 @@ h2 {
 .start p {
     font-size: 1.2em;
     color: #666;
-    margin-bottom: 20px;
+    
 }
 
 .start div {
@@ -46,4 +46,3 @@ h2 {
     justify-content: center;
     gap: 23.04px;
 }
-

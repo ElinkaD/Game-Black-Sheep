@@ -77,7 +77,7 @@ function useEagleCard(playerId, animalType, dialog) {
         if (data.status === 'success') {
             alert(data.message);
             dialog.close();
-            getGameStatus(); 
+            // getGameStatus(); 
         } else {
             alert(data.message);
         }

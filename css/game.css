@@ -1,8 +1,9 @@
 body{
     /* background-color: #F9FAF7; */
+    height: 100%;
+
     background-image: url('../img/back.webp');
-    background-repeat: repeat-y; 
-    background-position: center;  
+    background-repeat: no-repeat; 
     background-size: cover;
     
     font-family: 'RussianRail G Pro', sans-serif;
@@ -128,10 +129,10 @@ body{
 
 #waterhole, #player-zoo{
     width: 97%;
-    height: 230px;
+    height: 200px;
     border-radius: 15px;
     background-color: #f9faf7c5;
-    margin-bottom: 20px;
+    margin-bottom: 10px;
 
     position: relative;
 }
@@ -145,7 +146,7 @@ body{
 
 h3{
     margin: 0;
-    font-size: 32px;
+    font-size: 24px;
 }
 
 #place-cards-btn{

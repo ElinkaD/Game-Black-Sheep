@@ -6,7 +6,6 @@ import { openEagleCardDialog } from '../components/dialog/templates/eagle/script
 import { setupQuitButton, quitGame } from './quit_game.js';
 import { deleteGame } from './delete.js';
 
-const cardContainers = new Map();
 let selectedCards = [];
 
 function addClickListenersToCards(containerId) {
@@ -75,7 +74,6 @@ export function getGameStatus() {
     .then(data => {
         console.log("JSON-данные:", data);
         if (data.status === 'success') {
-            openEagleCardDialog(data.info.zoo_opponent_cards, roomIdGame);
             if (data.info.count_players <= 1 && data.info.current_turn_player != null) {
                 alert('Игра завершена!');
                 deleteGame(roomIdGame); 
@@ -100,7 +98,6 @@ export function getGameStatus() {
 
 function updateGameStatus(gameInfo) {
     const opponentsZoo = document.getElementById('opponents-zoo');
-    const playerName = document.getElementById('player-name');
     // const magpieCard = document.getElementById('magpie-card');
     const timerElement = document.getElementById('timer'); 
 
@@ -206,8 +203,6 @@ function updateGameStatus(gameInfo) {
     if (gameInfo.my_player_info.zoo_cards) {
         updateCards('player-zoo-cards', gameInfo.my_player_info.zoo_cards);
     }
-    
-    playerName.innerHTML += userLogin;
 
     if (gameInfo.my_player_info.hand_cards) {
         updateCards('player-hand-cards', gameInfo.my_player_info.hand_cards);
@@ -279,7 +274,7 @@ document.addEventListener("DOMContentLoaded", () => {
     getGameStatus();
     setupQuitButton();
 
-    // setInterval(() => getGameStatus(), 10000);
+    setInterval(() => getGameStatus(), 10000);
 });
 
 document.getElementById('place-cards-btn').addEventListener('click', () => {

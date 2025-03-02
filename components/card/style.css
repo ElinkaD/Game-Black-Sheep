@@ -1,6 +1,6 @@
 .card {
-    width: 150px;
-    height: 200px;
+    width: 130px;
+    height: 170px;
     transition: transform 0.2s;
 
     flex-shrink: 0;

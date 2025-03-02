@@ -72,7 +72,7 @@ $_SESSION['game'] = $response;
 		<div class="zoo_water">
 			<div class="left-panel">
 				<div class="room-info">
-					<h1>Комната №<?= htmlspecialchars(string: $room_id) ?></h1>
+					<h1>Комната №<?= htmlspecialchars( $room_id) ?></h1>
 					<button id="quit-button" data-id-room="<?= htmlspecialchars($room_id) ?>">
 						<img src='../img/door.svg'>
 					</button>
@@ -99,7 +99,7 @@ $_SESSION['game'] = $response;
 
 		<div class="game-panel">
 			<div id="player-hand">
-				<h3 id="player-name">Твои карты на руках, </h3>
+				<h3>Твои карты на руках, <?= htmlspecialchars($_SESSION['login'])?></h3>
 				<div id="player-hand-cards" class="card-container"></div>
 			</div>
 			<div class="game-status-panel">

@@ -1,8 +1,64 @@
+.rules-container {
+    border-radius: 12px;
+    margin: 0 auto;
+}
+
+img{
+    margin: 0 auto;
+}
+
+h1 {
+    font-family: 'Groboldov', sans-serif;
+    font-size: 2.5em;
+    text-align: center;
+    margin-bottom: 20px;
+}
+
+h2 {
+    font-family: 'Groboldov', sans-serif;
+    font-size: 1.8em;
+    color: #2c3e50;
+    margin-top: 30px;
+    margin-bottom: 15px;
+    padding-bottom: 5px;
+}
+
+p {
+    font-size: 1.1em;
+    margin-bottom: 15px;
+    text-align: justify;
+}
+
+ol, ul {
+    margin-left: 20px;
+    margin-bottom: 20px;
+}
+
+ol li, ul li {
+    margin-bottom: 10px;
+    font-size: 1.1em;
+}
+
+.rules-list {
+    list-style-type: disc;
+    margin-left: 40px;
+}
+
+strong {
+    font-weight: bold;
+}
+
+.rules-container {
+    animation: fadeIn 0.5s ease-in-out;
+}
+
+
+/* Стили для диалогового окна */
 dialog {
     border: none;
     border-radius: 12px;
-    padding: 20px;
-    background-color: #f0faf0; 
+    padding: 10px;
+    background-color: #f0faf0;
     box-shadow: 0 4px 20px rgba(0, 0, 0, 0.2);
     max-width: 900px;
     max-height: 600px;
@@ -21,14 +77,20 @@ dialog {
         transform: translateY(0);
     }
 }
-
-.dialog-content{
+.dialog-content {
     height: 90%;
     display: flex;
     flex-direction: column;
-    justify-content: center;
     align-items: center;
+    justify-content: center; 
+    margin: 0 auto;
+    padding: 30px;
 }
+
+dialog[data-dialog-name="rules-dialog"] .dialog-content {
+    justify-content: flex-start; 
+}
+
 
 .close {
     position: absolute;
@@ -46,6 +108,7 @@ dialog {
     color: #333;
 }
 
+/* Формы */
 form {
     display: flex;
     flex-direction: column;
@@ -58,21 +121,25 @@ form {
     margin-bottom: 20px;
 }
 
-.form-group input {
+.form-group input, .form-group select {
     width: 100%;
     padding: 10px;
-    border: 2px solid #c4da87; 
+    border: 2px solid #c4da87;
     border-radius: 8px;
     background-color: #f3f8e9;
     font-size: 16px;
     outline: none;
     transition: border-color 0.3s ease, box-shadow 0.3s ease;
     box-sizing: border-box;
+    appearance: none;
+    -webkit-appearance: none;
+    -moz-appearance: none;
+    cursor: pointer;
 }
 
-.form-group input:focus {
+.form-group input:focus, .form-group select:focus {
     border-color: #D1DCB2;
-    box-shadow: 0 0 8px rgba(168, 213, 168, 0.5); 
+    box-shadow: 0 0 8px rgba(168, 213, 168, 0.5);
 }
 
 .form-group label {
@@ -93,7 +160,6 @@ form {
     color: #2c3e50;
     padding: 0 5px;
 }
-
 button{
     padding: 10px 20px;
     border: none;
@@ -115,22 +181,17 @@ button:hover {
 button:active {
     transform: translateY(0);
 }
-
-
 .rules-button {
     position: fixed;
-    top: 4%; 
-    right: 3%; 
-
-    background-image: url('../../img/rules.png'); 
+    top: 4%;
+    right: 3%;
+    background-image: url('../../img/rules.png');
     background-size: 60%;
     background-position: center;
     background-repeat: no-repeat;
-
     width: 70px;
     height: 70px;
 }
-
 .form-group select {
     width: 100%;
     padding: 10px;
@@ -159,51 +220,12 @@ button:active {
     font-size: 16px;
 }
 
-.admin_del{
+.admin_del {
     display: flex;
     gap: 20px;
-
     height: 42px;
 }
 
-#delete-all-arooms{
+#delete-all-arooms {
     width: 50%;
 }
-
-p, ul, ol {
-    font-size: 1.3rem;
-    color: #555;
-    margin: 0;
-}
-
-ol {
-    padding-left: 20px;
-}
-
-.rules-container {
-    display: flex;
-    flex-direction: column;
-    align-items: center;
-    gap: 10px;
-    padding: 20px;
-    font-size: 18px;
-}
-
-.rules-list {
-    list-style-type: none;
-    padding: 0;
-    margin: 0;
-    font-size: 16px;
-}
-
-.rules-list li {
-    padding: 5px;
-    font-size: 16px;
-    color: #2c3e50;
-}
-
-h1{
-    font-family: 'Groboldov', sans-serif; 
-}
-
-
