@@ -56,34 +56,30 @@ function openEagleCardDialog(opponents) {
     });
 }
 
-function useEagleCard(playerId, animalType, dialog) {
-    fetch('/~s338859/Game-Black-Sheep/api/request_card.php', {  
+function useEagleCard(playerId, animalType, roomId, dialog) {
+    fetch('../api/request_card.php', {
         method: 'POST',
         headers: {
-            'Content-Type': 'application/json',
+            'Content-Type': 'application/x-www-form-urlencoded',
         },
-        body: JSON.stringify({
+        body: new URLSearchParams({
             player: playerId,
             animal_type: animalType,
         }),
     })
-    .then(response => {
-        if (!response.ok) {
-            throw new Error(`Ошибка HTTP: ${response.status}`);
-        }
-        return response.json();
-    })
+    .then(response => response.json())
     .then(data => {
         if (data.status === 'success') {
             alert(data.message);
             dialog.close();
-            // getGameStatus(); 
+            getGameStatus(roomId); 
         } else {
-            alert(data.message);
+            alert(data.message || 'Ошибка при использовании карты Орла');
         }
     })
     .catch(error => {
-        console.log('Ошибка при использовании карты Орла:', error);
+        console.error('Ошибка при использовании карты Орла:', error);
+        alert('Ошибка при использовании карты Орла');
     })
     .finally(() => {
         dialog.close(); 

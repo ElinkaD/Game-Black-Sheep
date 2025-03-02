@@ -76,7 +76,9 @@ export function getGameStatus() {
         if (data.status === 'success') {
             if (data.info.count_players <= 1 && data.info.current_turn_player != null) {
                 alert('Игра завершена!');
-                deleteGame(roomIdGame); 
+                setTimeout(() => {
+                    deleteGame(roomIdGame); 
+                }, 1000); 
                 window.location.href = './rooms.php';
             }
 
@@ -100,7 +102,9 @@ function updateGameStatus(gameInfo) {
     const opponentsZoo = document.getElementById('opponents-zoo');
     // const magpieCard = document.getElementById('magpie-card');
     const timerElement = document.getElementById('timer'); 
-
+    const waterhole = document.getElementById('waterhole-cards');
+    
+    waterhole.innerHTML = '';
     opponentsZoo.innerHTML = '';
 
     document.getElementById('hod').innerHTML = gameInfo.current_player_login;
@@ -138,7 +142,9 @@ function updateGameStatus(gameInfo) {
 
     if (gameInfo.has_eagle_card) {
         const opponents = gameInfo.zoo_opponent_cards; 
-        openEagleCardDialog(opponents, roomIdGame); 
+        setTimeout(() => {
+            openEagleCardDialog(opponents, roomIdGame);  
+        }, 1000); 
     }
 
     if (gameInfo.zoo_opponent_cards) {
@@ -239,24 +245,17 @@ function drawCard(playerId) {
 function showCardInModal(id, calculatedType, cardType = null, message = "") {
     gameModalCard.showCardInModal(id, calculatedType, cardType, message);
     
-    // if (cardType !== 'черная овечка') {
-    //     const waterhole = document.getElementById('waterhole-cards');
+    if (cardType !== 'черная овечка') {
+        const waterhole = document.getElementById('waterhole-cards');
         
-    //     if (waterhole) {
-    //         let cardContainer = waterhole.querySelector('.card-container');
-            
-    //         if (!cardContainer) {
-    //             cardContainer = document.createElement('div');
-    //             cardContainer.className = 'card-container';
-    //             waterhole.appendChild(cardContainer); 
-    //         }
-    //         renderCard(id, calculatedType, cardType, (html) => {
-    //             cardContainer.innerHTML += html;
-    //         });
-    //     } else {
-    //         console.error("Не найден элемент с id 'waterhole'");
-    //     }
-    // }
+        if (waterhole) {
+            renderCard(id, calculatedType, cardType, (html) => {
+                waterhole.insertAdjacentHTML('beforeend', html);
+            });
+        } else {
+            console.error("Не найден элемент с id 'waterhole'");
+        }
+    }
     if (cardType === 'черная овечка') {
         getGameStatus();
     }
@@ -274,10 +273,14 @@ document.addEventListener("DOMContentLoaded", () => {
     getGameStatus();
     setupQuitButton();
 
-    setInterval(() => getGameStatus(), 10000);
+    setInterval(() => getGameStatus(), 5000);
 });
 
 document.getElementById('place-cards-btn').addEventListener('click', () => {
+    const waterhole = document.getElementById('waterhole-cards');
+    if (waterhole) {
+        waterhole.innerHTML = '';
+    }
     placeCardsInZoo(roomIdGame, selectedCards);
     getGameStatus();
 });

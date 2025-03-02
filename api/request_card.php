@@ -8,9 +8,8 @@ if (!isset($_SESSION['token'])) {
 	exit;
 }
 
-$data = json_decode(file_get_contents("php://input"), true);
-$player = isset($data['player']) ? $data['player'] : null;
-$animal_type = isset($data['animal_type']) ? $data['animal_type'] : null;
+$player = $_POST['player'] ?? null;
+$animal_type = $_POST['animal_type'] ?? null;
 
 $stmt = $pdo->prepare('SELECT s338859.request_card(:t, :player, :animal_type)');
 $stmt->execute(['t' => $_SESSION['token'], 'player' => $player, 'animal_type' => $animal_type]);
