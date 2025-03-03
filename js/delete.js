@@ -1,4 +1,5 @@
 export function deleteGame(roomId) {
+    console.log('Deleting room with ID:', roomId);
     fetch('../api/delete_game_room.php', {
         method: 'POST',
         headers: { "Content-Type": "application/json" },
@@ -16,13 +17,4 @@ export function deleteGame(roomId) {
         console.error('Ошибка при удаление комнаты:', error);
     });
 }
-
-// export function setupQuitButton() {
-//     const quitButton = document.getElementById("quit-button");
-//     const roomIdFromButton = quitButton.getAttribute('data-id-room');
-
-//     quitButton.addEventListener("click", () => {
-//         quitGame(roomIdFromButton);  
-//     });
-// }
 

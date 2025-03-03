@@ -76,6 +76,7 @@ $_SESSION['game'] = $response;
 					<button id="quit-button" data-id-room="<?= htmlspecialchars($room_id) ?>">
 						<img src='../img/door.svg'>
 					</button>
+					<!-- <button id="exit_in_rooms"></button> -->
 				</div>
 				<h3>Зоопарки игроков</h3>
 				<div id="opponents-zoo">

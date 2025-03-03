@@ -79,7 +79,6 @@ function useEagleCard(playerId, animalType, roomId, dialog) {
     })
     .catch(error => {
         console.error('Ошибка при использовании карты Орла:', error);
-        alert('Ошибка при использовании карты Орла');
     })
     .finally(() => {
         dialog.close(); 

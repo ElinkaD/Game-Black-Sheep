@@ -1,10 +1,6 @@
 <?php
 session_start();
 
-error_reporting(E_ALL);
-ini_set('display_errors', 1);
-header('Content-Type: application/json');
-
 include 'db_connect.php';
 
 if (!isset($_SESSION['token'])) {

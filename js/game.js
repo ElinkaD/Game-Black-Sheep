@@ -7,6 +7,7 @@ import { setupQuitButton, quitGame } from './quit_game.js';
 import { deleteGame } from './delete.js';
 
 let selectedCards = [];
+let roomIdGame;
 
 function addClickListenersToCards(containerId) {
     const container = document.getElementById(containerId);
@@ -76,15 +77,15 @@ export function getGameStatus() {
         if (data.status === 'success') {
             if (data.info.count_players <= 1 && data.info.current_turn_player != null) {
                 alert('Игра завершена!');
-                setTimeout(() => {
-                    deleteGame(roomIdGame); 
-                }, 1000); 
+                deleteGame(roomIdGame); 
                 window.location.href = './rooms.php';
+                return;
             }
 
             if (data.info.game_winner != 'false') {
                 alert(data.info.game_winner);
                 quitGame(roomIdGame); 
+                return;
             }
             
             updateGameStatus(data.info); 
@@ -142,9 +143,7 @@ function updateGameStatus(gameInfo) {
 
     if (gameInfo.has_eagle_card) {
         const opponents = gameInfo.zoo_opponent_cards; 
-        setTimeout(() => {
-            openEagleCardDialog(opponents, roomIdGame);  
-        }, 1000); 
+        openEagleCardDialog(opponents, roomIdGame);
     }
 
     if (gameInfo.zoo_opponent_cards) {
@@ -261,7 +260,6 @@ function showCardInModal(id, calculatedType, cardType = null, message = "") {
     }
 }
 
-let roomIdGame;
 
 document.addEventListener("DOMContentLoaded", () => {
     roomIdGame = new URLSearchParams(window.location.search).get('room_id');
@@ -273,14 +271,14 @@ document.addEventListener("DOMContentLoaded", () => {
     getGameStatus();
     setupQuitButton();
 
-    setInterval(() => getGameStatus(), 5000);
+    setInterval(() => getGameStatus(), 10000);
 });
 
 document.getElementById('place-cards-btn').addEventListener('click', () => {
-    const waterhole = document.getElementById('waterhole-cards');
-    if (waterhole) {
-        waterhole.innerHTML = '';
-    }
     placeCardsInZoo(roomIdGame, selectedCards);
     getGameStatus();
 });
+
+// document.getElementById('exit_in_rooms').addEventListener('click', () => {
+//     window.location.href = './rooms.php';
+// });

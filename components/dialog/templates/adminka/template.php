@@ -6,7 +6,7 @@
             <input name="room_id" type="number" placeholder=" " required>
             <label for="room_id">Номер комнаты</label>
         </div>
-        <button type="submit">Удалить комнату</button>
+        <button type="submit">Удалить</button>
     </div>
 </form>
 <button id="delete-all-arooms">Удалить все пустые комнаты</button>
