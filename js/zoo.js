@@ -1,4 +1,4 @@
-import { getGameStatus } from './game.js'; 
+import { updateGameStatus } from './game.js'; 
 
 export function placeCardsInZoo(roomId, selectedCards) {
     const formData = new FormData();
@@ -16,13 +16,15 @@ export function placeCardsInZoo(roomId, selectedCards) {
     .then(data => {
         if (data.status === 'success') {
             alert(data.message);
-            getGameStatus(); 
+            updateGameStatus(data.info.game_status); 
+
+            selectedCards.length = 0; 
+            localStorage.removeItem('selectedCards');
         } else {
             alert('Ошибка: ' + data.message);
         }
     })
     .catch(error => {
-        console.error('Ошибка при выкладывании карт:', error);
-        alert('Ошибка при выкладывании карт');
+        console.log('Ошибка при выкладывании карт:', error);
     });
 }

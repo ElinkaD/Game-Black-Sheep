@@ -1,4 +1,4 @@
-import { getGameStatus } from '/~s338859/Game-Black-Sheep/js/game.js'; 
+import { updateGameStatus } from '/~s338859/Game-Black-Sheep/js/game.js'; 
 
 
 
@@ -52,7 +52,8 @@ function openEagleCardDialog(opponents) {
     });
 
     cancelEagleCardButton.addEventListener('click', () => {
-        useEagleCard(null, null, dialog); 
+        const playerId = playerSelect.value;
+        useEagleCard(playerId, 0, dialog); 
     });
 }
 
@@ -72,9 +73,9 @@ function useEagleCard(playerId, animalType, roomId, dialog) {
         if (data.status === 'success') {
             alert(data.message);
             dialog.close();
-            getGameStatus(roomId); 
+            updateGameStatus(data.info.game_status);
         } else {
-            alert(data.message || 'Ошибка при использовании карты Орла');
+            alert(data.message);
         }
     })
     .catch(error => {

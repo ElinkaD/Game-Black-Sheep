@@ -1,5 +1,5 @@
 import { renderCard } from '/~s338859/Game-Black-Sheep/components/card/script.js';
-import { getGameStatus } from '/~s338859/Game-Black-Sheep/js/game.js'; 
+import { updateGameStatus } from '/~s338859/Game-Black-Sheep/js/game.js'; 
 
 
 
@@ -51,7 +51,7 @@ function handleCardClickMole(cardId, roomId, dialog) {
         if (data.status === 'success') {
             alert(data.message);
             dialog.close();
-            getGameStatus();
+            updateGameStatus(data.info.game_status);
         } else {
             alert('Ошибка: ' + data.message);
         }

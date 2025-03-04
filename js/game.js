@@ -31,6 +31,7 @@ function handleCardClick(cardId, cardElement) {
         selectedCards.splice(cardIndex, 1);
         cardElement.style.boxShadow = '';
     }
+    localStorage.setItem('selectedCards', JSON.stringify(selectedCards));
 }
 
 function updateCards(containerId, cardsData) {
@@ -43,22 +44,26 @@ function updateCards(containerId, cardsData) {
     }
 
     const newCards = new Set(cardsData.map(card => card.card_id));
-
     const currentCards = container.querySelectorAll('.card');
     currentCards.forEach(cardElement => {
-        const cardId = cardElement.dataset.cardId;
-        if (!newCards.has(cardId)) {
-            cardElement.remove();
+        if (!newCards.has(cardElement.dataset.cardId)) {
+            cardElement.classList.add('removing');
+            setTimeout(() => cardElement.remove(), 300);
         }
     });
+    
 
-    cardsData.forEach(card => {
-        const existingCardElement = container.querySelector(`[data-card-id="${card.card_id}"]`);
-        if (!existingCardElement) {
-            renderCard(card.card_id, card.calculated_type, card.card_type, (html) => {
-                container.insertAdjacentHTML('beforeend', html);
-            });
-        }
+    Promise.all(cardsData.map(card =>
+        new Promise(resolve => {
+            const existingCardElement = container.querySelector(`[data-card-id="${card.card_id}"]`);
+            if (!existingCardElement) {
+                renderCard(card.card_id, card.calculated_type, card.card_type, resolve);
+            } else {
+                resolve(existingCardElement.outerHTML); 
+            }
+        })
+    )).then(newCardsHtml => {
+        container.innerHTML = newCardsHtml.join('');
     });
 }
 
@@ -84,6 +89,11 @@ export function getGameStatus() {
 
             if (data.info.game_winner != 'false') {
                 alert(data.info.game_winner);
+                if (data.info.count_players <= 1 && data.info.current_turn_player != null) {
+                    deleteGame(roomIdGame);
+                    window.location.href = './rooms.php';
+                    return;
+                }
                 quitGame(roomIdGame); 
                 return;
             }
@@ -99,7 +109,7 @@ export function getGameStatus() {
     });
 }
 
-function updateGameStatus(gameInfo) {
+export function updateGameStatus(gameInfo) {
     const opponentsZoo = document.getElementById('opponents-zoo');
     // const magpieCard = document.getElementById('magpie-card');
     const timerElement = document.getElementById('timer'); 
@@ -145,56 +155,57 @@ function updateGameStatus(gameInfo) {
         const opponents = gameInfo.zoo_opponent_cards; 
         openEagleCardDialog(opponents, roomIdGame);
     }
-
-    if (gameInfo.zoo_opponent_cards) {
+    if (gameInfo.zoo_opponent_cards) { 
         for (const playerId in gameInfo.zoo_opponent_cards) {
             const playerInfo = gameInfo.zoo_opponent_cards[playerId];
-            const playerDiv = document.createElement('div');
-            playerDiv.className = 'opponent';
-            playerDiv.dataset.playerId = playerId;
-            
+            let playerDiv = document.getElementById(`data-player-id-${playerId}`);
+    
             const playerLogin = playerInfo.player_login;
-            const isCurrentPlayer = playerLogin === currentPlayerLogin; 
-        
-            playerDiv.innerHTML = `
+            const isCurrentPlayer = playerLogin === currentPlayerLogin;
+
+            if (!playerDiv) {
+                playerDiv = document.createElement('div');
+                playerDiv.className = 'opponent';
+                playerDiv.id = `data-player-id-${playerId}`;
+                playerDiv.dataset.playerId = playerId;
+                document.getElementById('opponents-zoo').appendChild(playerDiv);
+
+                playerDiv.innerHTML = `
                 <div class="opponent-header">
                     <p class="player-login">Игрок ${playerLogin}</p>
-                    <p class="cards-count">К-во карт: ${playerInfo.cards_in_hand_count}</p>
+                    <p class="cards-count" id="cards-count-${playerId}">К-во карт: ${playerInfo.cards_in_hand_count}</p>
                 </div>
+                <div class="card-container" id="zoo-${playerId}"></div>
             `;
+            }
+            updateCards(`zoo-${playerId}`, playerInfo.zoo_cards);
 
-            const cardContainer = document.createElement('div');
-            cardContainer.className = 'card-container'
+            document.getElementById(`cards-count-${playerId}`).innerHTML = `К-во карт: ${playerInfo.cards_in_hand_count}`;
 
-            playerInfo.zoo_cards.forEach(card => {
-                renderCard(card.card_id, card.calculated_type, card.card_type, (html) => {
-                    cardContainer.innerHTML += html;
-                });
-            });
     
-            playerDiv.appendChild(cardContainer);
-            document.getElementById('opponents-zoo').appendChild(playerDiv);
+            if (isCurrentPlayer) {
+                playerDiv.classList.add('current-player');
+                selectedCards.length = 0; 
+                localStorage.removeItem('selectedCards');
+            }
     
             playerDiv.addEventListener('mouseenter', () => {
                 if (!isCurrentPlayer) {
-                    playerDiv.style.backgroundColor = '#D1DCB2'; 
+                    playerDiv.style.backgroundColor = '#D1DCB2';
                 }
-            })
+            });
     
             playerDiv.addEventListener('mouseleave', () => {
-                playerDiv.style.backgroundColor = ''; 
+                playerDiv.style.backgroundColor = '';
             });
     
             playerDiv.addEventListener('click', () => {
                 drawCard(playerId);
             });
-    
-            // Если это текущий игрок, выделяем его
-            if (isCurrentPlayer) {
-                playerDiv.classList.add('current-player');
-            }
         }
     }
+    
+    
 
     if (gameInfo.waterhole_cards) { 
         updateCards('waterhole-cards', gameInfo.waterhole_cards);
@@ -230,32 +241,25 @@ function drawCard(playerId) {
         console.log('Ответ от сервера:', data);
         if (data.status === 'success') {
             showCardInModal(data.card_id, data.calculated_type, data.card_type, data.message);
+            if(data.info.game_status != null){
+                updateGameStatus(data.info.game_status);
+            }
         } else {
             alert(data.message || 'Ошибка'); 
         }
     })
     .catch(error => {
         console.error('Ошибка при вытягивании карты:', error);
-        alert('Ошибка при вытягивании карты');
     });
 }
 
 
 function showCardInModal(id, calculatedType, cardType = null, message = "") {
     gameModalCard.showCardInModal(id, calculatedType, cardType, message);
-    
-    if (cardType !== 'черная овечка') {
-        const waterhole = document.getElementById('waterhole-cards');
-        
-        if (waterhole) {
-            renderCard(id, calculatedType, cardType, (html) => {
-                waterhole.insertAdjacentHTML('beforeend', html);
-            });
-        } else {
-            console.error("Не найден элемент с id 'waterhole'");
-        }
-    }
+
     if (cardType === 'черная овечка') {
+        selectedCards.length = 0; 
+        localStorage.removeItem('selectedCards');
         getGameStatus();
     }
 }
@@ -271,12 +275,26 @@ document.addEventListener("DOMContentLoaded", () => {
     getGameStatus();
     setupQuitButton();
 
-    setInterval(() => getGameStatus(), 10000);
+    setInterval(() => {
+        getGameStatus();
+
+        const savedSelectedCards = JSON.parse(localStorage.getItem('selectedCards')) || [];
+        selectedCards = savedSelectedCards;
+
+        setTimeout(() => {
+            const cards = document.querySelectorAll('.card');
+            cards.forEach(card => {
+                if (savedSelectedCards.includes(card.dataset.id.toString())) {
+                    card.style.boxShadow = '0px 0px 7px 7px rgb(200, 175, 73)';
+                }
+            });
+        }, 500);
+    }, 10000); 
 });
+
 
 document.getElementById('place-cards-btn').addEventListener('click', () => {
     placeCardsInZoo(roomIdGame, selectedCards);
-    getGameStatus();
 });
 
 // document.getElementById('exit_in_rooms').addEventListener('click', () => {

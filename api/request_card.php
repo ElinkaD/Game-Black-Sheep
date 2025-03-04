@@ -8,8 +8,8 @@ if (!isset($_SESSION['token'])) {
 	exit;
 }
 
-$player = $_POST['player'] ?? null;
-$animal_type = $_POST['animal_type'] ?? null;
+$player = $_POST['player'] ?? 0;
+$animal_type = $_POST['animal_type'] ?? 0;
 
 $stmt = $pdo->prepare('SELECT s338859.request_card(:t, :player, :animal_type)');
 $stmt->execute(['t' => $_SESSION['token'], 'player' => $player, 'animal_type' => $animal_type]);
