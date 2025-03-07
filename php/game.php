@@ -1,4 +1,8 @@
 <?php
+header("Access-Control-Allow-Origin: *");
+header("Access-Control-Allow-Methods: GET, POST, OPTIONS");
+header("Access-Control-Allow-Headers: Content-Type");
+
 session_start();
 
 if (!isset($_SESSION['token'])) {
@@ -47,6 +51,7 @@ $_SESSION['game'] = $response;
 <html>
 <head>
     <title>Игра Черная овечка №<?= htmlspecialchars($room_id)?></title>
+	<link rel="icon" type="image/x-icon" href="../favicon.ico">
 	<link rel="stylesheet" href="../css/game.css">
 	<link rel="stylesheet" href="../components/card/style.css">
 	<link rel="stylesheet" href="../components/game_modal_card/style.css">

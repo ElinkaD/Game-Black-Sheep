@@ -57,11 +57,11 @@ function openEagleCardDialog(opponents) {
     });
 }
 
-function useEagleCard(playerId, animalType, roomId, dialog) {
+function useEagleCard(playerId, animalType, dialog) {
     fetch('../api/request_card.php', {
         method: 'POST',
         headers: {
-            'Content-Type': 'application/x-www-form-urlencoded',
+            'Content-Type': 'application/x-www-form-urlencoded'
         },
         body: new URLSearchParams({
             player: playerId,
@@ -80,10 +80,7 @@ function useEagleCard(playerId, animalType, roomId, dialog) {
     })
     .catch(error => {
         console.error('Ошибка при использовании карты Орла:', error);
-    })
-    .finally(() => {
-        dialog.close(); 
-        document.body.classList.remove("dialog-open");
+        alert('Ошибка при соединении с сервером');
     });
 }
 

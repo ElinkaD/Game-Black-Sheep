@@ -1,6 +1,7 @@
 export function quitGame(roomId) {
     fetch('../api/remove_player_from_game.php', {
         method: 'POST',
+        mode: "cors",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({ room: roomId })
     })
@@ -14,8 +15,7 @@ export function quitGame(roomId) {
         }
     })
     .catch(error => {
-        console.error('Ошибка при выходе из игры:', error);
-        alert('Ошибка при выходе из игры');
+        console.log('Ошибка при выходе из игры:', error);
     });
 }
 

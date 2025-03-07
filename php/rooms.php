@@ -27,8 +27,8 @@ render_dialog('adminka-dialog', $adminka, true);
 <html>	
 <head>
     <title>Игра Черная овечка</title>
+    <link rel="icon" type="image/x-icon" href="../favicon.ico">
     <link rel="stylesheet" href="../css/rooms.css">
-
 	<style>
         @font-face {
             font-family: 'RussianRail G Pro';

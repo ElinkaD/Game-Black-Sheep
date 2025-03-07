@@ -104,8 +104,7 @@ export function getGameStatus() {
         }
     })
     .catch(error => {
-        console.error('Ошибка при получении статуса игры:', error);
-        alert('Ошибка при получении статуса игры');
+        console.log('Ошибка при получении статуса игры:', error);
     });
 }
 

@@ -2,6 +2,7 @@
 <html>
 <head>
     <title>Игра Черная овечка</title>
+    <link rel="icon" type="image/x-icon" href="../favicon.ico">
     <link rel="stylesheet" href="../css/start.css">
     <style>
         @font-face {
